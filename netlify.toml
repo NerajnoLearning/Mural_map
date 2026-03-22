@@ -10,3 +10,8 @@
   from = "/*"
   to = "/index.html"
   status = 200
+
+# Supabase anon key is intentionally public (client-side safe)
+# Service role key is server-only (used only in Netlify functions)
+[build.processing]
+  SECRETS_SCAN_OMIT_KEYS = ["VITE_SUPABASE_ANON_KEY"]

@@ -93,12 +93,12 @@ You're getting the error because Google OAuth is not enabled in your Supabase pr
      ```
    - **Authorized redirect URIs**: Add this URL (IMPORTANT):
      ```
-     https://zrtdaalomfqcvfhxddwz.supabase.co/auth/v1/callback
+     https://YOUR-PROJECT-REF.supabase.co/auth/v1/callback
      ```
      ☝️ **Replace `zrtdaalomfqcvfhxddwz` with YOUR Supabase project reference**
 
      To find your project reference:
-     - Your Supabase URL: `https://zrtdaalomfqcvfhxddwz.supabase.co`
+     - Your Supabase URL: `https://YOUR-PROJECT-REF.supabase.co`
      - The part before `.supabase.co` is your project ref
 
 6. Click **Create**
@@ -200,7 +200,7 @@ For **Production** (10 minutes):
 
 Based on your `.env` file:
 ```
-https://zrtdaalomfqcvfhxddwz.supabase.co/auth/v1/callback
+https://YOUR-PROJECT-REF.supabase.co/auth/v1/callback
 ```
 
 Use this exact URL in your Google Cloud Console OAuth configuration!
