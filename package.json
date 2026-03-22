@@ -1,0 +1,61 @@
+{
+  "name": "mural-map",
+  "version": "1.0.0",
+  "type": "module",
+  "private": true,
+  "description": "MuralMap - Discover, photograph, and share street murals",
+  "author": "Nerajno (Nerando Johnson)",
+  "license": "ISC",
+  "scripts": {
+    "dev": "vite",
+    "build": "vue-tsc --noEmit && vite build",
+    "preview": "vite preview",
+    "type-check": "vue-tsc --noEmit",
+    "lint": "echo \"Linting not yet configured\"",
+    "test": "vitest",
+    "test:ui": "vitest --ui",
+    "test:run": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:headed": "playwright test --headed",
+    "test:e2e:debug": "playwright test --debug",
+    "test:all": "npm run test:run && npm run test:e2e"
+  },
+  "keywords": [
+    "street-art",
+    "murals",
+    "photography",
+    "map",
+    "social"
+  ],
+  "devDependencies": {
+    "@playwright/test": "^1.58.2",
+    "@types/dompurify": "^3.0.5",
+    "@types/leaflet": "^1.9.21",
+    "@vitejs/plugin-vue": "^6.0.5",
+    "@vitest/coverage-v8": "^4.1.0",
+    "@vue/test-utils": "^2.4.6",
+    "autoprefixer": "^10.4.27",
+    "happy-dom": "^20.8.4",
+    "postcss": "^8.5.8",
+    "tailwindcss": "^3.4.19",
+    "typescript": "^5.9.3",
+    "vite": "^8.0.1",
+    "vitest": "^4.1.0",
+    "vue-tsc": "^3.2.6"
+  },
+  "dependencies": {
+    "@clerk/vue": "^2.0.6",
+    "@supabase/supabase-js": "^2.99.3",
+    "browser-image-compression": "^2.0.2",
+    "dompurify": "^3.3.3",
+    "exifr": "^7.1.3",
+    "leaflet": "^1.9.4",
+    "leaflet.markercluster": "^1.5.3",
+    "pinia": "^3.0.4",
+    "svix": "^1.89.0",
+    "vue": "^3.5.30",
+    "vue-router": "^5.0.4"
+  }
+}
