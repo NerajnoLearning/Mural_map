@@ -1,14 +1,12 @@
 <script setup lang="ts">
-import { onMounted, onUnmounted, ref } from 'vue'
+import { computed, onMounted, onUnmounted, ref } from 'vue'
 import { useRouter, useRoute } from 'vue-router'
-import { useClerk } from '@clerk/vue'
 import { useAuthStore } from '@/stores/auth'
 import { useNotificationsStore } from '@/stores/notifications'
 import { useAppStore } from '@/stores/app'
 
 const router = useRouter()
 const route = useRoute()
-const clerk = useClerk()
 const authStore = useAuthStore()
 const notificationsStore = useNotificationsStore()
 const appStore = useAppStore()
@@ -16,13 +14,12 @@ const appStore = useAppStore()
 const realtimeChannel = ref<any>(null)
 const showUserMenu = ref(false)
 
-// currentUser comes from Clerk via the auth store
-const user = authStore.currentUser
+const user = computed(() => authStore.user)
 
 onMounted(async () => {
-  if (user?.id) {
-    await notificationsStore.fetchNotifications(user.id)
-    realtimeChannel.value = notificationsStore.subscribeToNotifications(user.id)
+  if (user.value?.id) {
+    await notificationsStore.fetchNotifications(user.value.id)
+    realtimeChannel.value = notificationsStore.subscribeToNotifications(user.value.id)
   }
 })
 
@@ -34,7 +31,7 @@ onUnmounted(() => {
 
 const handleSignOut = async () => {
   showUserMenu.value = false
-  await clerk.signOut()
+  await authStore.signOut()
   router.push('/')
 }
 </script>
