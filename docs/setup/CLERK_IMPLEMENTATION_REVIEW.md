@@ -309,7 +309,7 @@ export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
 - Option B: Keep both, document which to use
 
 ### 2. Incomplete Clerk Key (Truncated)
-**Current**: `pk_test_Y29taWMtc3RvcmstMTEuY2xlcmsuYWNjb3VudHMuZGV2JA`
+**Current**: `pk_test_YOUR_KEY_HERE`
 **Status**: Appears complete but verify it works
 **Action**: Test authentication flow
 
