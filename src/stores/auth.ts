@@ -10,7 +10,6 @@ export const useAuthStore = defineStore('auth', () => {
   let clerkAuth: any = null
   let clerkUser: any = null
   let clerkInstance: any = null
-  let clerkGetToken: any = null
   let clerkInitialized = false
 
   const synced = ref(false)
@@ -23,7 +22,6 @@ export const useAuthStore = defineStore('auth', () => {
       clerkAuth = useAuth()
       clerkUser = useUser()
       clerkInstance = useClerk()
-      clerkGetToken = clerkAuth.getToken
       clerkInitialized = true
       logger.info('Clerk initialized successfully')
     } catch (err) {
@@ -87,7 +85,7 @@ export const useAuthStore = defineStore('auth', () => {
     syncing.value = true
 
     try {
-      const token = await clerkGetToken({ template: 'supabase' })
+      const token = await clerkAuth.getToken({ template: 'supabase' })
 
       if (!token) {
         logger.error('No Clerk token available')
@@ -126,7 +124,7 @@ export const useAuthStore = defineStore('auth', () => {
     if (!clerkAuth?.isSignedIn?.value) return supabase
 
     try {
-      const token = await clerkGetToken({ template: 'supabase' })
+      const token = await clerkAuth.getToken({ template: 'supabase' })
       if (token) {
         return createAuthClient(token)
       }
