@@ -9,6 +9,7 @@ lerna-debug.log*
 
 # Dependencies
 node_modules
+node_modules/.vite-hash
 dist
 dist-ssr
 *.local
@@ -53,3 +54,6 @@ coverage/
 test-results/
 playwright-report/
 playwright/.cache/
+
+# Local Netlify folder
+.netlify

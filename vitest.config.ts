@@ -28,9 +28,8 @@ export default defineConfig({
         statements: 60
       }
     },
-    // Test file patterns
-    include: ['**/*.{test,spec}.{js,mjs,cjs,ts,mts,cts,jsx,tsx}'],
-    exclude: ['node_modules', 'dist', '.idea', '.git', '.cache']
+    include: ['tests/unit/**/*.{test,spec}.{ts,tsx}', 'src/**/*.{test,spec}.{ts,tsx}'],
+    exclude: ['node_modules', '.netlify', 'tests/e2e', 'dist', '.idea', '.git', '.cache']
   },
   resolve: {
     alias: {

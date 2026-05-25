@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useClerk } from '@clerk/vue'
 import { useClerkAuthStore } from '@/stores/clerkAuth'
 import { useAppStore } from '@/stores/app'
+import { usePushNotifications } from '@/composables/usePushNotifications'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
 
@@ -24,9 +25,19 @@ const defaultVisibility = ref<'public' | 'friends'>('public')
 const showLocation = ref(true)
 const savingPrivacy = ref(false)
 
-// Notification preferences (future implementation)
+// Notification preferences
 const emailNotifications = ref(true)
 const pushNotifications = ref(false)
+const { supported: pushSupported, loading: pushLoading, isSubscribed, toggle: togglePush } = usePushNotifications()
+
+onMounted(async () => {
+  pushNotifications.value = await isSubscribed()
+})
+
+async function handlePushToggle(val: boolean) {
+  const ok = await togglePush(val)
+  pushNotifications.value = ok ? val : !val
+}
 
 // Appearance settings
 const theme = ref<'light' | 'dark' | 'system'>('system')
@@ -114,10 +125,19 @@ const handleDeleteAccount = async () => {
   }
 
   try {
-    // This would need backend implementation
-    appStore.showToast('Account deletion requested - Feature coming soon', 'info')
-    showDeleteConfirm.value = false
-    deleteConfirmText.value = ''
+    const clerkId = authStore.clerkUser?.id
+    if (!clerkId) throw new Error('Not authenticated')
+
+    const res = await fetch('/.netlify/functions/delete-account', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ clerk_id: clerkId }),
+    })
+
+    if (!res.ok) throw new Error('Deletion failed')
+
+    await clerkSignOut()
+    router.push('/')
   } catch (error) {
     appStore.showToast('Failed to delete account', 'error')
   }
@@ -160,6 +180,15 @@ const handleSignOut = async () => {
                 : 'bg-surface-elevated text-text hover:bg-surface-overlay'"
             >
               Privacy
+            </button>
+            <button
+              @click="activeTab = 'notifications'"
+              class="w-full px-16 py-12 rounded-lg text-left font-medium transition"
+              :class="activeTab === 'notifications'
+                ? 'bg-primary text-white'
+                : 'bg-surface-elevated text-text hover:bg-surface-overlay'"
+            >
+              Notifications
             </button>
             <button
               @click="activeTab = 'appearance'"
@@ -271,6 +300,56 @@ const handleSignOut = async () => {
                 >
                   Save Privacy Settings
                 </BaseButton>
+              </div>
+            </section>
+          </div>
+
+          <!-- Notifications Tab -->
+          <div v-else-if="activeTab === 'notifications'" class="space-y-24">
+            <section class="bg-surface-elevated p-24 rounded-lg">
+              <h2 class="text-xl font-bold text-text mb-16">Notifications</h2>
+              <div class="space-y-16">
+                <!-- Email -->
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="font-medium text-text">Email notifications</p>
+                    <p class="text-sm text-text-muted">Receive activity updates via email</p>
+                  </div>
+                  <button
+                    role="switch"
+                    :aria-checked="emailNotifications"
+                    @click="emailNotifications = !emailNotifications"
+                    class="relative w-44 h-24 rounded-full transition-colors"
+                    :class="emailNotifications ? 'bg-primary' : 'bg-border'"
+                  >
+                    <span
+                      class="absolute top-2 left-2 w-20 h-20 bg-white rounded-full shadow transition-transform"
+                      :class="emailNotifications ? 'translate-x-20' : 'translate-x-0'"
+                    />
+                  </button>
+                </div>
+                <!-- Push -->
+                <div class="flex items-center justify-between">
+                  <div>
+                    <p class="font-medium text-text">Push notifications</p>
+                    <p class="text-sm text-text-muted">
+                      {{ pushSupported ? 'Get notified about likes, comments, and friends' : 'Not supported in this browser' }}
+                    </p>
+                  </div>
+                  <button
+                    role="switch"
+                    :aria-checked="pushNotifications"
+                    :disabled="!pushSupported || pushLoading"
+                    @click="handlePushToggle(!pushNotifications)"
+                    class="relative w-44 h-24 rounded-full transition-colors disabled:opacity-40"
+                    :class="pushNotifications ? 'bg-primary' : 'bg-border'"
+                  >
+                    <span
+                      class="absolute top-2 left-2 w-20 h-20 bg-white rounded-full shadow transition-transform"
+                      :class="pushNotifications ? 'translate-x-20' : 'translate-x-0'"
+                    />
+                  </button>
+                </div>
               </div>
             </section>
           </div>

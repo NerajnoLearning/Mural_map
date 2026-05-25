@@ -1,5 +1,6 @@
 // Centralized logging utility
 // Provides development logging with production safety
+import * as Sentry from '@sentry/vue'
 
 type LogLevel = 'log' | 'info' | 'warn' | 'error' | 'debug'
 
@@ -64,11 +65,14 @@ class Logger {
   }
 
   private sendToErrorTracking(level: 'warn' | 'error', args: any[]): void {
-    // TODO: Integrate with Sentry or similar error tracking service
-    // For now, we'll just store it for future implementation
     try {
-      // Example: Sentry.captureMessage(JSON.stringify(args), level)
-    } catch (err) {
+      const err = args.find(a => a instanceof Error)
+      if (err) {
+        Sentry.captureException(err, { level })
+      } else {
+        Sentry.captureMessage(args.map(a => String(a)).join(' '), level)
+      }
+    } catch {
       // Silently fail if error tracking fails
     }
   }

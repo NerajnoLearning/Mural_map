@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref, onErrorCaptured, provide } from 'vue'
 import { useRouter } from 'vue-router'
+import * as Sentry from '@sentry/vue'
 import { createLogger } from '@/utils/logger'
 import BaseButton from '@/components/ui/BaseButton.vue'
 
@@ -35,9 +36,8 @@ onErrorCaptured((err, instance, info) => {
   logger.error(`Error in ${props.name}:`, err)
   logger.error('Error info:', info)
 
-  // TODO: Send to error tracking service (Sentry, etc.)
   if (!isDev) {
-    // Example: Sentry.captureException(err, { extra: { info } })
+    Sentry.captureException(err, { extra: { info, component: props.name } })
   }
 
   // Prevent error from propagating up

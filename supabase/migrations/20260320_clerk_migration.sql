@@ -290,9 +290,3 @@ USING (
     AND users.clerk_id = public.clerk_user_id()
   )
 );
-
--- Migration complete!
--- Remember to:
--- 1. Set up Clerk JWT template in Clerk Dashboard (select "Supabase" template)
--- 2. Configure webhook endpoint to sync users from Clerk to Supabase
--- 3. Test authentication flow end-to-end

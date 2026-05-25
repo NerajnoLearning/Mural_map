@@ -22,6 +22,15 @@ MuralMap is a **production-ready, mobile-first Progressive Web App** that allows
 - 🔍 **Smart Search** - Search murals by title, artist, location, or tags
 - 🔥 **Trending Algorithm** - Discover popular murals with time-decay scoring
 - ⭐ **Collections** - Organize favorite murals into themed collections
+- 🎨 **Color Filter** - Browse murals by dominant color palette (extracted client-side on upload)
+- 🖼️ **Style & Theme Tags** - Filter by art style (graffiti, stencil, mosaic, photorealistic…) and theme (portrait, nature, political…)
+
+### Mural Archive & Location History
+- 📜 **Mural Timeline** - Each GPS location maintains a full history of murals painted there over time
+- 🪦 **Painted-Over Tracking** - Report when a mural has been painted over; the wall's history is preserved
+- 🏷️ **Mural Status Badges** - Active, Painted Over, Damaged, Removed, and Unknown states displayed on cards and map markers
+- 📍 **Location Page** - Dedicated view per wall showing every mural ever documented at that site, oldest to newest
+- 🔗 **Successor Linking** - Connect a painted-over mural to the new work that replaced it
 
 ### Social Features
 - 👥 **Friends System** - Follow friends and view their activity
@@ -67,6 +76,7 @@ MuralMap is a **production-ready, mobile-first Progressive Web App** that allows
 ### Libraries & APIs
 - **Maps**: [Leaflet](https://leafletjs.com/) + [MarkerCluster](https://github.com/Leaflet/Leaflet.markercluster)
 - **Images**: [browser-image-compression](https://www.npmjs.com/package/browser-image-compression) + [exifr](https://www.npmjs.com/package/exifr)
+- **Color Extraction**: [color-thief-browser](https://lokeshdhakar.com/projects/color-thief/) — client-side dominant palette, no external API
 - **PWA**: Service Worker + IndexedDB + Background Sync API
 - **Web APIs**: Geolocation, Share API, Clipboard, Intersection Observer
 
@@ -119,6 +129,7 @@ VITE_SUPABASE_ANON_KEY=your-anon-key-here
 #### Run Database Migrations
 1. Go to **SQL Editor** in Supabase dashboard
 2. Run the migration file: `supabase/migrations/schema.sql`
+3. Run the v2 migration: `supabase/migrations/location_timeline.sql`
 
 #### Enable Authentication
 1. Navigate to **Authentication → Providers**
@@ -200,6 +211,7 @@ mural_map/
 │   │   └── upload/        # Upload flow
 │   ├── composables/       # Reusable logic
 │   │   ├── useMap.ts
+│   │   ├── useColorExtraction.ts   # Client-side palette extraction
 │   │   └── useOfflineDrafts.ts
 │   ├── lib/
 │   │   └── supabase.ts    # Supabase client
@@ -208,6 +220,7 @@ mural_map/
 │   ├── stores/            # Pinia stores
 │   │   ├── auth.ts        # Authentication
 │   │   ├── posts.ts       # Posts CRUD
+│   │   ├── locations.ts   # Location/wall history (v2)
 │   │   ├── notifications.ts # Notifications + realtime
 │   │   ├── activity.ts    # Friend activity
 │   │   ├── collections.ts # Collections
@@ -222,6 +235,7 @@ mural_map/
 │   │   └── index.ts       # App types
 │   ├── utils/             # Utilities
 │   │   ├── imageProcessing.ts
+│   │   ├── colorExtraction.ts      # Dominant color → color family mapping
 │   │   └── validation.ts
 │   ├── views/             # Page components
 │   │   ├── auth/          # Auth pages
@@ -232,6 +246,7 @@ mural_map/
 │   │   ├── TrendingPage.vue
 │   │   ├── UploadPage.vue
 │   │   ├── PostDetailPage.vue
+│   │   ├── LocationPage.vue        # Wall timeline view (v2)
 │   │   ├── ProfilePage.vue
 │   │   ├── CollectionsPage.vue
 │   │   ├── NotificationsPage.vue
@@ -253,6 +268,49 @@ mural_map/
 ├── tsconfig.json
 ├── postcss.config.cjs
 └── package.json
+```
+
+---
+
+## 🗄️ Data Model Overview
+
+MuralMap v2 separates **locations** (physical walls) from **posts** (mural versions). This enables full timeline history per wall.
+
+```
+Location (physical wall/site)
+  └── Post/Mural (one version painted at that site)
+        ├── photos[]
+        ├── status: active | painted_over | damaged | removed | unknown
+        ├── active_from: date
+        ├── active_until: date | null
+        ├── art_style: string
+        ├── themes: string[]
+        └── dominant_colors: string[]
+```
+
+### v2 Schema Additions
+
+```sql
+-- Locations table (physical wall sites)
+CREATE TABLE locations (
+  id         UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  point      GEOGRAPHY(POINT, 4326) NOT NULL,
+  address    TEXT,
+  neighborhood TEXT,
+  city       TEXT,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+-- Additions to posts table
+ALTER TABLE posts ADD COLUMN location_id    UUID REFERENCES locations(id);
+ALTER TABLE posts ADD COLUMN status         TEXT DEFAULT 'active'
+  CHECK (status IN ('active','painted_over','damaged','removed','unknown'));
+ALTER TABLE posts ADD COLUMN active_from    DATE;
+ALTER TABLE posts ADD COLUMN active_until   DATE;
+ALTER TABLE posts ADD COLUMN art_style      TEXT;
+ALTER TABLE posts ADD COLUMN themes         TEXT[] DEFAULT '{}';
+ALTER TABLE posts ADD COLUMN dominant_colors TEXT[] DEFAULT '{}';
+ALTER TABLE posts ADD COLUMN ai_suggested   BOOLEAN DEFAULT false;
 ```
 
 ---
@@ -351,14 +409,44 @@ Technology guides and implementation examples:
 - [x] Settings page (account, privacy, theme)
 - [x] Web Share API integration
 
+### 🚧 v2 — Archive & Discovery (In Progress)
+
+#### Archive / Timeline
+- [ ] `locations` table (PostGIS) separate from posts
+- [ ] Mural status field (`active | painted_over | damaged | removed | unknown`)
+- [ ] `active_from` / `active_until` date fields on posts
+- [ ] "Report as painted over" flow on PostDetailPage
+- [ ] LocationPage — full wall timeline, oldest → newest
+- [ ] Status badges on feed cards and map markers
+- [ ] Archived mural toggle on MapPage (default off)
+- [ ] Successor linking — connect painted-over mural to its replacement
+- [ ] GPS proximity merge prompt on upload ("Is this the same wall?")
+
+#### Color, Style & Theme
+- [ ] Client-side dominant color extraction on upload (`color-thief-browser`)
+- [ ] Color family mapping (hex → red / orange / yellow / green / blue / purple / black / white / multicolor)
+- [ ] Color swatch filter row on DiscoverPage and SearchPage
+- [ ] Color-coded map marker layer (optional toggle)
+- [ ] Art style taxonomy (single-select on upload): `graffiti | stencil | wheatpaste | mosaic | photorealistic | abstract | geometric | lettering | character | mixed-media`
+- [ ] Theme taxonomy (multi-select on upload): `portrait | nature | political | cultural | geometric | fantasy | community | humor | memorial`
+- [ ] Style + theme filter panel on SearchPage (collapsible on mobile)
+- [ ] Style + theme display on PostDetailPage
+
+### 🔭 v3 — AI-Assisted Classification (Stretch Goals)
+- [ ] Supabase Edge Function: send uploaded image to vision model API
+- [ ] Suggested `art_style`, `themes[]`, and `dominant_colors[]` returned as JSON
+- [ ] Upload flow surfaces suggestions with one-tap confirm/edit
+- [ ] `ai_suggested` flag stored per post for data quality tracking
+- [ ] Artist signature OCR — attempt text extraction, fuzzy-match against known artists, surface as suggestion only (never auto-applied)
+
 ---
 
 ## 📊 Project Metrics
 
 - **Lines of Code**: ~11,792
 - **Components**: 50+
-- **Pinia Stores**: 10
-- **Views/Pages**: 18
+- **Pinia Stores**: 10 (11 with `locations` store)
+- **Views/Pages**: 18 (19 with `LocationPage`)
 - **Routes**: 20+
 - **Type Definitions**: 30+
 - **Completion**: ~90%
@@ -433,13 +521,16 @@ npm run test:all
 Current test files:
 - ✅ **Unit Tests**
   - `tests/unit/utils/validation.spec.ts` - Input validation utilities
+  - `tests/unit/utils/colorExtraction.spec.ts` - Color family mapping logic
   - `tests/unit/stores/auth.spec.ts` - Authentication store (15+ tests)
   - `tests/unit/stores/posts.spec.ts` - Posts store with trending algorithm (20+ tests)
+  - `tests/unit/stores/locations.spec.ts` - Location/timeline store
   - `tests/unit/components/BaseButton.spec.ts` - Base button component (30+ tests)
 
 - ✅ **E2E Tests**
   - `tests/e2e/auth.spec.ts` - Authentication flow (sign up, sign in, OAuth, password reset)
   - `tests/e2e/posts.spec.ts` - Post creation, feed, map view, interactions
+  - `tests/e2e/location-timeline.spec.ts` - Wall history, painted-over reporting
 
 ### Test Configuration
 
@@ -518,6 +609,8 @@ For more testing details, see [TESTING_STRATEGY.md](./docs/TESTING_STRATEGY.md)
 - [ ] Admin dashboard
 - [ ] Content moderation
 - [ ] Analytics dashboard
+- [ ] AI-assisted mural classification (v3 — see roadmap above)
+- [ ] Artist OCR identification (v3 stretch goal)
 
 ---
 
@@ -560,6 +653,7 @@ Permission to use, copy, modify, and/or distribute this software for any purpose
 - **Supabase** - For the incredible backend platform
 - **Leaflet** - For the open-source map library
 - **TailwindCSS** - For the utility-first CSS framework
+- **color-thief-browser** - For client-side color palette extraction
 
 ---
 
@@ -577,4 +671,4 @@ If you found this project helpful or interesting, please give it a ⭐️!
 
 **Built with ❤️ for street art enthusiasts worldwide**
 
-*Last Updated: March 20, 2026*
+*Last Updated: May 2026*

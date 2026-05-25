@@ -3,13 +3,15 @@
 | Field | Value |
 |---|---|
 | **Product** | MuralMap |
-| **Version** | 1.1 |
-| **Status** | Draft |
-| **Last Updated** | 2026-03-22 |
+| **Version** | 1.2 |
+| **Status** | In Development |
+| **Last Updated** | 2026-04-07 |
 | **Author** | Nerajno (Nerando Johnson) |
 | **Reviewers** | TBD |
 
 > **v1.1 Changelog:** Added User Journey Maps (§4.1), Critical User Flows (§4.2), expanded Design System with concrete tokens and component states (§11), UX Microcopy Guidelines (§11.1), Information Architecture (§11.2), Usability Testing Plan (§14.1). Fixed TOC to include Testing Strategy. Strengthened select acceptance criteria and added UX design notes per epic.
+
+> **v1.2 Changelog (2026-04-07):** Security hardening — fixed XSS vulnerabilities in `MapView.vue` (innerHTML → DOM API + textContent), `OAuthButton.vue` (v-html → static SVG), and `main.ts` (innerHTML → textContent). Patched 16 vulnerable npm dependencies (vite, happy-dom, yaml, picomatch) via `npm audit fix` — 0 vulnerabilities remaining. Fixed Vite HMR WebSocket config (`127.0.0.1` to resolve Firefox IPv6/IPv4 mismatch). Build verified clean.
 
 ---
 
@@ -2298,16 +2300,16 @@ export default defineConfig({
 
 ## 15. Roadmap & Milestones
 
-| Milestone | Target | Key Deliverables |
-|---|---|---|
-| **M0 — Foundation** | Week 1–2 | Clerk auth + Supabase schema + webhooks + routing + design tokens + Syne/Instrument Sans fonts |
-| **M1 — Core Loop** | Week 3–5 | Upload flow, EXIF parsing, HEIC conversion, post detail, basic feed, favorites |
-| **M1.5 — Usability Test** | End of Week 5 | Test upload + onboarding with 5 participants; iterate before map work |
-| **M2 — Map** | Week 6–7 | Map view, pin clustering, radius search, manual pin, "Near Me" |
-| **M3 — Social** | Week 8–10 | Friends, comments, @mentions, reactions, in-app notifications |
-| **M4 — Discovery** | Week 11–12 | Collections, search, tags, trending, filter feed |
-| **M5 — Polish & PWA** | Week 13–14 | Dark mode, offline draft, push notifications, Lighthouse audit, empty states audit |
-| **M5.5 — Usability Test** | End of Week 14 | Full flow test with staging build; fix P0 issues before launch |
-| **M6 — Testing** (Optional) | Week 15–17 | Unit tests, component tests, E2E tests, CI/CD integration |
-| **v1.0 Launch** | Week 15–18 | Public launch; moderation workflow documented; analytics instrumented |
-| **v1.1 — Backlog** | Post-launch | Moderation dashboard, batch upload, GeoJSON export, DMs (prototype), artist profiles |
+| Milestone | Target | Status | Key Deliverables |
+|---|---|---|---|
+| **M0 — Foundation** | Week 1–2 | ✅ Complete | Clerk auth + Supabase schema + webhooks + routing + design tokens + Syne/Instrument Sans fonts |
+| **M1 — Core Loop** | Week 3–5 | ✅ Complete | Upload flow, EXIF parsing, HEIC conversion, post detail, basic feed, favorites |
+| **M1.5 — Usability Test** | End of Week 5 | ✅ Complete | Test upload + onboarding with 5 participants; iterate before map work |
+| **M2 — Map** | Week 6–7 | ✅ Complete | Map view, pin clustering, radius search, manual pin, "Near Me" |
+| **M3 — Social** | Week 8–10 | ✅ Complete | Friends, comments, @mentions, reactions, in-app notifications |
+| **M4 — Discovery** | Week 11–12 | ✅ Complete | Collections, search, tags, trending, filter feed |
+| **M5 — Polish & PWA** | Week 13–14 | 🔄 In Progress | Dark mode, offline draft, push notifications, Lighthouse audit, empty states audit |
+| **M5.5 — Usability Test** | End of Week 14 | ⬜ Pending | Full flow test with staging build; fix P0 issues before launch |
+| **M6 — Security & Testing** | Week 15–17 | 🔄 In Progress | XSS fixes, dependency patching, unit/component/E2E tests, CI/CD integration |
+| **v1.0 Launch** | Week 15–18 | ⬜ Pending | Public launch; moderation workflow documented; analytics instrumented |
+| **v1.1 — Backlog** | Post-launch | ⬜ Planned | Moderation dashboard, batch upload, GeoJSON export, DMs (prototype), artist profiles |

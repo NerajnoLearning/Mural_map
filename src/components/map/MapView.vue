@@ -76,20 +76,33 @@ const addPostsToMap = () => {
     if (!post.lat || !post.lng) return
 
     const popupContent = document.createElement('div')
-    popupContent.innerHTML = `
-      <div style="min-width: 200px; cursor: pointer;" class="map-popup">
-        <img
-          src="${post.image_url}"
-          alt="${post.title || 'Mural'}"
-          style="width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;"
-        />
-        <h3 style="font-weight: bold; margin: 0 0 4px 0; font-size: 14px;">
-          ${post.title || 'Untitled'}
-        </h3>
-        ${post.artist ? `<p style="margin: 0 0 8px 0; color: #666; font-size: 12px;">by ${post.artist}</p>` : ''}
-        ${post.city ? `<p style="margin: 0; color: #999; font-size: 12px;">${post.city}</p>` : ''}
-      </div>
-    `
+    popupContent.style.cssText = 'min-width: 200px; cursor: pointer;'
+    popupContent.className = 'map-popup'
+
+    const img = document.createElement('img')
+    img.src = post.image_url ?? ''
+    img.alt = post.title || 'Mural'
+    img.style.cssText = 'width: 100%; height: 120px; object-fit: cover; border-radius: 8px; margin-bottom: 8px;'
+    popupContent.appendChild(img)
+
+    const title = document.createElement('h3')
+    title.style.cssText = 'font-weight: bold; margin: 0 0 4px 0; font-size: 14px;'
+    title.textContent = post.title || 'Untitled'
+    popupContent.appendChild(title)
+
+    if (post.artist) {
+      const artist = document.createElement('p')
+      artist.style.cssText = 'margin: 0 0 8px 0; color: #666; font-size: 12px;'
+      artist.textContent = `by ${post.artist}`
+      popupContent.appendChild(artist)
+    }
+
+    if (post.city) {
+      const city = document.createElement('p')
+      city.style.cssText = 'margin: 0; color: #999; font-size: 12px;'
+      city.textContent = post.city
+      popupContent.appendChild(city)
+    }
 
     // Add click handler to popup
     popupContent.addEventListener('click', () => {
