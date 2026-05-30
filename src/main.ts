@@ -9,6 +9,13 @@ import './assets/main.css'
 import { logger } from './utils/logger'
 import { configureSanitizer } from './utils/sanitize'
 import { getEnvironmentConfig } from './utils/env'
+import { OhVueIcon, addIcons } from 'oh-vue-icons'
+import {
+  FaHeart, FaFolder, FaCamera, FaUsers, FaBell,
+  FaFire, FaFileAlt, FaHistory, FaSearch,
+} from 'oh-vue-icons/icons'
+
+addIcons(FaHeart, FaFolder, FaCamera, FaUsers, FaBell, FaFire, FaFileAlt, FaHistory, FaSearch)
 
 // Validate environment variables before app initialization
 try {
@@ -70,6 +77,7 @@ if (!clerkPubKey) {
   })
 }
 
+app.component('VIcon', OhVueIcon)
 app.use(router)
 
 // Mount app last
