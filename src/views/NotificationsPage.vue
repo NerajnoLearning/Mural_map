@@ -6,6 +6,8 @@ import { useNotificationsStore } from '@/stores/notifications'
 import { useAppStore } from '@/stores/app'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import type { Notification } from '@/types'
+import { usePushNotifications } from '@/composables/usePushNotifications'
+import PushPrimerCard from '@/components/ui/PushPrimerCard.vue'
 
 const router = useRouter()
 const authStore = useAuthStore()
@@ -14,6 +16,8 @@ const appStore = useAppStore()
 
 const activeTab = ref<'all' | 'unread'>('all')
 const realtimeChannel = ref<any>(null)
+const { supported: pushSupported, isSubscribed, subscribe } = usePushNotifications()
+const showPrimer = ref(false)
 
 const filteredNotifications = computed(() => {
   if (activeTab.value === 'unread') {
@@ -32,6 +36,10 @@ onMounted(async () => {
 
   // Subscribe to realtime notifications
   realtimeChannel.value = notificationsStore.subscribeToNotifications(authStore.user.id)
+
+  if (pushSupported && !(await isSubscribed()) && !localStorage.getItem('push-primer-dismissed')) {
+    showPrimer.value = true
+  }
 })
 
 onUnmounted(() => {
@@ -68,6 +76,16 @@ const handleDelete = async (notificationId: string) => {
   } catch (error) {
     appStore.showToast('Failed to delete notification', 'error')
   }
+}
+
+async function handlePrimerEnable() {
+  const ok = await subscribe()
+  if (ok) showPrimer.value = false
+}
+
+function handlePrimerDismiss() {
+  localStorage.setItem('push-primer-dismissed', '1')
+  showPrimer.value = false
 }
 
 const handleNotificationClick = async (notification: Notification) => {
@@ -229,6 +247,17 @@ onUnmounted(() => {
           </button>
         </div>
       </header>
+
+      <!-- Push primer -->
+      <div
+        v-if="showPrimer"
+        class="px-16 pt-16"
+      >
+        <PushPrimerCard
+          :on-enable="handlePrimerEnable"
+          :on-dismiss="handlePrimerDismiss"
+        />
+      </div>
 
       <!-- Loading state -->
       <div
