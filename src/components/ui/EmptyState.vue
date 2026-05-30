@@ -36,7 +36,7 @@ withDefaults(defineProps<Props>(), {
     <RouterLink
       v-if="ctaLabel && ctaTo"
       :to="ctaTo"
-      class="inline-flex px-24 py-12 bg-primary text-white rounded-lg hover:bg-primary-dark transition font-medium text-sm"
+      class="inline-flex items-center justify-center font-semibold rounded-lg transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-offset-2 bg-primary text-white hover:bg-primary-dark focus:ring-primary px-16 py-8 text-base"
     >
       {{ ctaLabel }}
     </RouterLink>
