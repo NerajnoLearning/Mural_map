@@ -3,6 +3,7 @@ import { onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useActivityStore } from '@/stores/activity'
+import EmptyState from '@/components/ui/EmptyState.vue'
 import type { ActivityItem } from '@/stores/activity'
 
 const router = useRouter()
@@ -102,35 +103,56 @@ const goToPost = (postId: string) => {
     <div class="max-w-2xl mx-auto">
       <!-- Header -->
       <header class="sticky top-0 z-10 bg-surface-elevated border-b border-border px-16 py-16">
-        <h1 class="text-2xl font-bold text-text">Activity</h1>
-        <p class="text-sm text-text-muted mt-4">What your friends have been up to</p>
+        <h1 class="text-2xl font-bold text-text">
+          Activity
+        </h1>
+        <p class="text-sm text-text-muted mt-4">
+          What your friends have been up to
+        </p>
       </header>
 
       <!-- Loading -->
-      <div v-if="activityStore.loading && activityStore.activities.length === 0" class="flex items-center justify-center py-48">
-        <svg class="animate-spin h-32 w-32 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      <div
+        v-if="activityStore.loading && activityStore.activities.length === 0"
+        class="flex items-center justify-center py-48"
+      >
+        <svg
+          class="animate-spin h-32 w-32 text-primary"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          />
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
         </svg>
       </div>
 
       <!-- Empty state -->
-      <div v-else-if="activityStore.activities.length === 0" class="text-center py-48 px-16">
-        <div class="text-6xl mb-16">👥</div>
-        <h3 class="text-lg font-bold text-text mb-8">No activity yet</h3>
-        <p class="text-text-muted mb-24">
-          Connect with friends to see their activity here
-        </p>
-        <router-link
-          to="/search"
-          class="inline-flex px-24 py-12 bg-primary text-white rounded-lg hover:bg-primary-dark transition font-medium"
-        >
-          Find Friends
-        </router-link>
-      </div>
+      <EmptyState
+        v-else-if="activityStore.activities.length === 0"
+        icon="fa-history"
+        title="No activity yet"
+        description="Connect with friends to see their activity here."
+        cta-label="Find Friends"
+        cta-to="/search"
+      />
 
       <!-- Activity feed -->
-      <div v-else class="divide-y divide-border">
+      <div
+        v-else
+        class="divide-y divide-border"
+      >
         <div
           v-for="activity in activityStore.activities"
           :key="activity.id"
@@ -147,8 +169,8 @@ const goToPost = (postId: string) => {
               <div class="flex items-start justify-between gap-12 mb-8">
                 <div class="flex-1">
                   <button
-                    @click="goToProfile(activity.user.username)"
                     class="font-bold text-text hover:text-primary transition"
+                    @click="goToProfile(activity.user.username)"
                   >
                     {{ activity.user.display_name || activity.user.username }}
                   </button>
@@ -162,23 +184,29 @@ const goToPost = (postId: string) => {
               <!-- Post preview (if applicable) -->
               <button
                 v-if="activity.post"
-                @click="goToPost(activity.post.id)"
                 class="flex gap-12 p-12 bg-surface rounded-lg hover:bg-surface-overlay transition text-left w-full"
+                @click="goToPost(activity.post.id)"
               >
                 <img
                   v-if="activity.post.image_url"
                   :src="activity.post.image_url"
                   :alt="activity.post.title || 'Mural'"
                   class="w-64 h-64 rounded object-cover flex-shrink-0"
-                />
+                >
                 <div class="flex-1 min-w-0">
                   <p class="font-medium text-text truncate">
                     {{ activity.post.title || 'Untitled' }}
                   </p>
-                  <p v-if="activity.post.artist" class="text-sm text-text-muted truncate">
+                  <p
+                    v-if="activity.post.artist"
+                    class="text-sm text-text-muted truncate"
+                  >
                     by {{ activity.post.artist }}
                   </p>
-                  <p v-if="activity.post.city" class="text-sm text-text-muted truncate">
+                  <p
+                    v-if="activity.post.city"
+                    class="text-sm text-text-muted truncate"
+                  >
                     📍 {{ activity.post.city }}
                   </p>
                 </div>
@@ -195,8 +223,11 @@ const goToPost = (postId: string) => {
                     :src="activity.target_user.avatar_url"
                     :alt="activity.target_user.display_name || activity.target_user.username"
                     class="w-full h-full object-cover"
-                  />
-                  <span v-else class="text-lg font-bold text-primary">
+                  >
+                  <span
+                    v-else
+                    class="text-lg font-bold text-primary"
+                  >
                     {{ (activity.target_user.display_name || activity.target_user.username).charAt(0).toUpperCase() }}
                   </span>
                 </div>
@@ -219,9 +250,25 @@ const goToPost = (postId: string) => {
           ref="loadMoreTrigger"
           class="py-16 text-center"
         >
-          <svg class="animate-spin h-24 w-24 text-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <svg
+            class="animate-spin h-24 w-24 text-primary mx-auto"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
           </svg>
         </div>
       </div>
