@@ -1,17 +1,37 @@
 <script setup lang="ts">
 import { onMounted, computed, ref, watch } from 'vue'
-import { RouterView, useRoute } from 'vue-router'
+import { RouterView, useRoute, useRouter } from 'vue-router'
 import { storeToRefs } from 'pinia'
 import { useAppStore } from '@/stores/app'
+import { useOfflineDrafts } from '@/composables/useOfflineDrafts'
 import TopNav from '@/components/layout/TopNav.vue'
 import BottomNav from '@/components/layout/BottomNav.vue'
 import ErrorBoundary from '@/components/common/ErrorBoundary.vue'
+import ReconnectBanner from '@/components/ui/ReconnectBanner.vue'
 
 const route = useRoute()
 
 // Initialize store
 const appStore = useAppStore()
 const { toasts } = storeToRefs(appStore)
+
+const router = useRouter()
+const { pendingPosts, getAllPendingPosts } = useOfflineDrafts()
+const showReconnectBanner = ref(false)
+
+watch(() => appStore.isOnline, async (online, wasOnline) => {
+  if (online && wasOnline === false) {
+    await getAllPendingPosts()
+    if (pendingPosts.value.length > 0) {
+      showReconnectBanner.value = true
+    }
+  }
+})
+
+function handleSync() {
+  showReconnectBanner.value = false
+  router.push('/drafts')
+}
 
 // Check if user is signed in - safely handle Clerk
 const isSignedIn = ref(false)
@@ -51,7 +71,10 @@ onMounted(() => {
 
 <template>
   <ErrorBoundary name="App">
-    <div id="app" class="min-h-screen bg-surface text-text">
+    <div
+      id="app"
+      class="min-h-screen bg-surface text-text"
+    >
       <!-- Top Navigation (Desktop) -->
       <TopNav v-if="shouldShowNav" />
 
@@ -62,32 +85,40 @@ onMounted(() => {
         </ErrorBoundary>
       </div>
 
+      <!-- Reconnect Banner -->
+      <ReconnectBanner
+        v-if="showReconnectBanner && shouldShowNav"
+        :count="pendingPosts.length"
+        :on-sync="handleSync"
+        :on-dismiss="() => (showReconnectBanner = false)"
+      />
+
       <!-- Bottom Navigation (Mobile) -->
       <BottomNav v-if="shouldShowNav" />
 
-    <!-- Toast Container -->
-    <div class="fixed bottom-80 md:bottom-24 left-1/2 transform -translate-x-1/2 z-50 space-y-8 max-w-md w-full px-16">
-      <div
-        v-for="toast in toasts"
-        :key="toast.id"
-        class="px-16 py-12 rounded-lg shadow-lg text-white flex items-center justify-between"
-        :class="{
-          'bg-success': toast.type === 'success',
-          'bg-error': toast.type === 'error',
-          'bg-warning': toast.type === 'warning',
-          'bg-info': toast.type === 'info'
-        }"
-      >
-        <span>{{ toast.message }}</span>
-        <button
-          @click="appStore.dismissToast(toast.id)"
-          class="ml-16 text-white font-bold text-xl"
-          aria-label="Dismiss"
+      <!-- Toast Container -->
+      <div class="fixed bottom-80 md:bottom-24 left-1/2 transform -translate-x-1/2 z-50 space-y-8 max-w-md w-full px-16">
+        <div
+          v-for="toast in toasts"
+          :key="toast.id"
+          class="px-16 py-12 rounded-lg shadow-lg text-white flex items-center justify-between"
+          :class="{
+            'bg-success': toast.type === 'success',
+            'bg-error': toast.type === 'error',
+            'bg-warning': toast.type === 'warning',
+            'bg-info': toast.type === 'info'
+          }"
         >
-          ×
-        </button>
+          <span>{{ toast.message }}</span>
+          <button
+            class="ml-16 text-white font-bold text-xl"
+            aria-label="Dismiss"
+            @click="appStore.dismissToast(toast.id)"
+          >
+            ×
+          </button>
+        </div>
       </div>
-    </div>
     </div>
   </ErrorBoundary>
 </template>
