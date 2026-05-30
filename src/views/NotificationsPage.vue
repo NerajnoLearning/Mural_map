@@ -4,6 +4,7 @@ import { useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import { useNotificationsStore } from '@/stores/notifications'
 import { useAppStore } from '@/stores/app'
+import EmptyState from '@/components/ui/EmptyState.vue'
 import type { Notification } from '@/types'
 
 const router = useRouter()
@@ -186,12 +187,14 @@ onUnmounted(() => {
       <!-- Header -->
       <header class="sticky top-0 z-10 bg-surface-elevated border-b border-border px-16 py-16">
         <div class="flex items-center justify-between mb-16">
-          <h1 class="text-2xl font-bold text-text">Notifications</h1>
+          <h1 class="text-2xl font-bold text-text">
+            Notifications
+          </h1>
 
           <button
             v-if="notificationsStore.unreadCount > 0"
-            @click="handleMarkAllAsRead"
             class="text-sm font-medium text-primary hover:text-primary/80 transition"
+            @click="handleMarkAllAsRead"
           >
             Mark all as read
           </button>
@@ -200,20 +203,20 @@ onUnmounted(() => {
         <!-- Tabs -->
         <div class="flex gap-4">
           <button
-            @click="activeTab = 'all'"
             class="px-16 py-8 rounded-lg text-sm font-medium transition"
             :class="activeTab === 'all'
               ? 'bg-primary text-white'
               : 'bg-surface text-text hover:bg-surface-overlay'"
+            @click="activeTab = 'all'"
           >
             All
           </button>
           <button
-            @click="activeTab = 'unread'"
             class="px-16 py-8 rounded-lg text-sm font-medium transition flex items-center gap-6"
             :class="activeTab === 'unread'
               ? 'bg-primary text-white'
               : 'bg-surface text-text hover:bg-surface-overlay'"
+            @click="activeTab = 'unread'"
           >
             Unread
             <span
@@ -228,44 +231,63 @@ onUnmounted(() => {
       </header>
 
       <!-- Loading state -->
-      <div v-if="notificationsStore.loading && filteredNotifications.length === 0" class="flex items-center justify-center py-48">
-        <svg class="animate-spin h-32 w-32 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+      <div
+        v-if="notificationsStore.loading && filteredNotifications.length === 0"
+        class="flex items-center justify-center py-48"
+      >
+        <svg
+          class="animate-spin h-32 w-32 text-primary"
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+        >
+          <circle
+            class="opacity-25"
+            cx="12"
+            cy="12"
+            r="10"
+            stroke="currentColor"
+            stroke-width="4"
+          />
+          <path
+            class="opacity-75"
+            fill="currentColor"
+            d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+          />
         </svg>
       </div>
 
       <!-- Empty state -->
-      <div v-else-if="filteredNotifications.length === 0" class="text-center py-48 px-16">
-        <div class="text-6xl mb-16">🔔</div>
-        <h3 class="text-lg font-bold text-text mb-8">
-          {{ activeTab === 'unread' ? 'No unread notifications' : 'No notifications yet' }}
-        </h3>
-        <p class="text-text-muted">
-          {{ activeTab === 'unread'
-            ? "You're all caught up!"
-            : "When someone interacts with your content, you'll see it here" }}
-        </p>
-      </div>
+      <EmptyState
+        v-else-if="filteredNotifications.length === 0"
+        icon="fa-bell"
+        :title="activeTab === 'unread' ? 'No unread notifications' : 'No notifications yet'"
+      />
 
       <!-- Notifications list -->
-      <div v-else class="divide-y divide-border">
+      <div
+        v-else
+        class="divide-y divide-border"
+      >
         <div
           v-for="notification in filteredNotifications"
           :key="notification.id"
           class="relative group"
         >
           <button
-            @click="handleNotificationClick(notification)"
             class="w-full px-16 py-16 hover:bg-surface-overlay transition text-left flex items-start gap-12"
             :class="!notification.read ? 'bg-primary/5' : ''"
+            @click="handleNotificationClick(notification)"
           >
             <!-- Unread indicator -->
             <div
               v-if="!notification.read"
               class="w-8 h-8 rounded-full bg-primary flex-shrink-0 mt-8"
-            ></div>
-            <div v-else class="w-8 flex-shrink-0"></div>
+            />
+            <div
+              v-else
+              class="w-8 flex-shrink-0"
+            />
 
             <!-- Avatar -->
             <div class="w-48 h-48 rounded-full bg-primary/10 overflow-hidden flex items-center justify-center flex-shrink-0">
@@ -274,8 +296,11 @@ onUnmounted(() => {
                 :src="notification.actor.avatar_url"
                 :alt="notification.actor.display_name || notification.actor.username"
                 class="w-full h-full object-cover"
-              />
-              <span v-else class="text-lg font-bold text-primary">
+              >
+              <span
+                v-else
+                class="text-lg font-bold text-primary"
+              >
                 {{ getNotificationIcon(notification.type) }}
               </span>
             </div>
@@ -292,12 +317,22 @@ onUnmounted(() => {
 
             <!-- Delete button -->
             <button
-              @click.stop="handleDelete(notification.id)"
               class="opacity-0 group-hover:opacity-100 p-8 hover:bg-surface-elevated rounded-lg transition flex-shrink-0"
               aria-label="Delete notification"
+              @click.stop="handleDelete(notification.id)"
             >
-              <svg class="w-16 h-16 text-text-muted hover:text-error" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <svg
+                class="w-16 h-16 text-text-muted hover:text-error"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </button>
@@ -309,9 +344,25 @@ onUnmounted(() => {
           ref="loadMoreTrigger"
           class="py-16 text-center"
         >
-          <svg class="animate-spin h-24 w-24 text-primary mx-auto" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <svg
+            class="animate-spin h-24 w-24 text-primary mx-auto"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
           </svg>
         </div>
       </div>

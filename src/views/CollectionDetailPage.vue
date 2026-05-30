@@ -7,6 +7,7 @@ import { useAppStore } from '@/stores/app'
 import PostCard from '@/components/feed/PostCard.vue'
 import BaseButton from '@/components/ui/BaseButton.vue'
 import BaseInput from '@/components/ui/BaseInput.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
 import type { Post } from '@/types'
 
 const props = defineProps<{ id: string }>()
@@ -180,29 +181,64 @@ const goBack = () => {
 <template>
   <div class="min-h-screen bg-surface">
     <!-- Loading state -->
-    <div v-if="loading" class="flex items-center justify-center min-h-screen">
-      <svg class="animate-spin h-48 w-48 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-        <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-        <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+    <div
+      v-if="loading"
+      class="flex items-center justify-center min-h-screen"
+    >
+      <svg
+        class="animate-spin h-48 w-48 text-primary"
+        xmlns="http://www.w3.org/2000/svg"
+        fill="none"
+        viewBox="0 0 24 24"
+      >
+        <circle
+          class="opacity-25"
+          cx="12"
+          cy="12"
+          r="10"
+          stroke="currentColor"
+          stroke-width="4"
+        />
+        <path
+          class="opacity-75"
+          fill="currentColor"
+          d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+        />
       </svg>
     </div>
 
     <!-- Collection content -->
-    <div v-else-if="collection" class="max-w-content mx-auto">
+    <div
+      v-else-if="collection"
+      class="max-w-content mx-auto"
+    >
       <!-- Header -->
       <header class="sticky top-0 z-10 bg-surface-elevated border-b border-border px-16 py-16">
         <div class="flex items-center justify-between">
           <button
-            @click="goBack"
             class="flex items-center gap-8 text-text hover:text-primary transition"
+            @click="goBack"
           >
-            <svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+            <svg
+              class="w-20 h-20"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M10 19l-7-7m0 0l7-7m-7 7h18"
+              />
             </svg>
             <span class="font-medium">Back</span>
           </button>
 
-          <div v-if="isOwner" class="flex gap-8">
+          <div
+            v-if="isOwner"
+            class="flex gap-8"
+          >
             <BaseButton
               variant="outline"
               size="sm"
@@ -223,8 +259,13 @@ const goBack = () => {
 
       <!-- Collection info -->
       <div class="p-24">
-        <h1 class="text-3xl font-bold text-text mb-8">{{ collection.name }}</h1>
-        <p v-if="collection.description" class="text-text-muted mb-16">
+        <h1 class="text-3xl font-bold text-text mb-8">
+          {{ collection.name }}
+        </h1>
+        <p
+          v-if="collection.description"
+          class="text-text-muted mb-16"
+        >
           {{ collection.description }}
         </p>
         <div class="flex items-center gap-16 text-sm text-text-muted">
@@ -233,7 +274,10 @@ const goBack = () => {
         </div>
 
         <!-- Drag hint -->
-        <div v-if="isOwner && collection.posts && collection.posts.length > 1" class="mt-16 p-12 bg-primary/10 rounded-lg">
+        <div
+          v-if="isOwner && collection.posts && collection.posts.length > 1"
+          class="mt-16 p-12 bg-primary/10 rounded-lg"
+        >
           <p class="text-sm text-primary font-medium">
             💡 Drag murals to reorder them in this collection
           </p>
@@ -242,26 +286,21 @@ const goBack = () => {
 
       <!-- Posts grid -->
       <main class="px-24 pb-24">
-        <div v-if="!collection.posts || collection.posts.length === 0" class="text-center py-48">
-          <svg class="w-64 h-64 text-text-muted mx-auto mb-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          <h3 class="text-lg font-bold text-text mb-8">No murals yet</h3>
-          <p class="text-text-muted">
-            {{ isOwner ? 'Add murals to this collection from the mural detail pages' : 'This collection is empty' }}
-          </p>
-        </div>
+        <EmptyState
+          v-if="!collection.posts || collection.posts.length === 0"
+          icon="fa-camera"
+          :title="isOwner ? 'No murals yet' : 'This collection is empty'"
+          :description="isOwner ? 'Add murals to this collection from the mural detail pages.' : undefined"
+        />
 
-        <div v-else class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16">
+        <div
+          v-else
+          class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-16"
+        >
           <div
             v-for="(post, index) in collection.posts"
             :key="post.id"
             :draggable="isOwner"
-            @dragstart="handleDragStart(index)"
-            @dragover="(e) => handleDragOver(e, index)"
-            @dragleave="handleDragLeave"
-            @drop="(e) => handleDrop(e, index)"
-            @dragend="handleDragEnd"
             class="relative"
             :class="{
               'opacity-50': draggedIndex === index,
@@ -269,18 +308,33 @@ const goBack = () => {
               'cursor-move': isOwner && !isEditing,
               'cursor-grabbing': isOwner && isEditing
             }"
+            @dragstart="handleDragStart(index)"
+            @dragover="(e) => handleDragOver(e, index)"
+            @dragleave="handleDragLeave"
+            @drop="(e) => handleDrop(e, index)"
+            @dragend="handleDragEnd"
           >
             <PostCard :post="post" />
 
             <!-- Remove button (owner only) -->
             <button
               v-if="isOwner"
-              @click="handleRemovePost(post.id)"
               class="absolute top-8 right-8 p-8 bg-error text-white rounded-lg hover:bg-error/90 transition shadow-lg z-10"
               aria-label="Remove from collection"
+              @click="handleRemovePost(post.id)"
             >
-              <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <svg
+                class="w-16 h-16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
           </div>
@@ -298,7 +352,9 @@ const goBack = () => {
         class="bg-surface rounded-lg p-24 max-w-md w-full"
         @click.stop
       >
-        <h2 class="text-2xl font-bold text-text mb-16">Edit Collection</h2>
+        <h2 class="text-2xl font-bold text-text mb-16">
+          Edit Collection
+        </h2>
 
         <div class="space-y-16">
           <BaseInput
@@ -327,8 +383,8 @@ const goBack = () => {
             variant="outline"
             size="md"
             full-width
-            @click="closeEditModal"
             :disabled="isSaving"
+            @click="closeEditModal"
           >
             Cancel
           </BaseButton>
@@ -336,9 +392,9 @@ const goBack = () => {
             variant="primary"
             size="md"
             full-width
-            @click="handleSaveEdit"
             :loading="isSaving"
             :disabled="!editName.trim()"
+            @click="handleSaveEdit"
           >
             Save
           </BaseButton>
@@ -356,7 +412,9 @@ const goBack = () => {
         class="bg-surface rounded-lg p-24 max-w-md w-full"
         @click.stop
       >
-        <h3 class="text-xl font-bold text-text mb-12">Delete Collection?</h3>
+        <h3 class="text-xl font-bold text-text mb-12">
+          Delete Collection?
+        </h3>
         <p class="text-text-muted mb-24">
           This action cannot be undone. The collection will be permanently deleted, but the murals will remain.
         </p>

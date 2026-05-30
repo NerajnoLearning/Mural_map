@@ -2,6 +2,7 @@
 import { ref, onMounted } from 'vue'
 import { useAuthStore } from '@/stores/auth'
 import MasonryGrid from '@/components/feed/MasonryGrid.vue'
+import EmptyState from '@/components/ui/EmptyState.vue'
 import type { Post } from '@/types'
 import { createLogger } from '@/utils/logger'
 
@@ -56,28 +57,36 @@ onMounted(fetchFavorites)
   <div class="min-h-screen bg-surface">
     <!-- Header -->
     <div class="sticky top-0 z-10 bg-surface border-b-2 border-border px-16 py-12">
-      <h1 class="text-xl font-bold text-text">Favorites</h1>
+      <h1 class="text-xl font-bold text-text">
+        Favorites
+      </h1>
     </div>
 
     <div class="p-16">
       <!-- Error -->
-      <div v-if="error" class="text-center py-48 text-error text-sm">{{ error }}</div>
+      <div
+        v-if="error"
+        class="text-center py-48 text-error text-sm"
+      >
+        {{ error }}
+      </div>
 
       <!-- Grid -->
-      <MasonryGrid v-else :posts="posts" :loading="loading" />
+      <MasonryGrid
+        v-else
+        :posts="posts"
+        :loading="loading"
+      />
 
       <!-- Empty state -->
-      <div
+      <EmptyState
         v-if="!loading && posts.length === 0 && !error"
-        class="flex flex-col items-center justify-center py-64 text-center"
-      >
-        <svg class="w-48 h-48 text-text-muted mb-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5"
-            d="M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z" />
-        </svg>
-        <p class="text-text font-semibold text-lg mb-8">No favorites yet</p>
-        <p class="text-text-muted text-sm">Tap the heart on any mural to save it here.</p>
-      </div>
+        icon="fa-heart"
+        title="Nothing saved yet"
+        description="Find a mural worth keeping."
+        cta-label="Find a mural"
+        cta-to="/discover"
+      />
     </div>
   </div>
 </template>
