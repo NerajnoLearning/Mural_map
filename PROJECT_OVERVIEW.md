@@ -2310,6 +2310,6 @@ export default defineConfig({
 | **M4 — Discovery** | Week 11–12 | ✅ Complete | Collections, search, tags, trending, filter feed |
 | **M5 — Polish & PWA** | Week 13–14 | 🔄 In Progress | Dark mode, offline draft, push notifications, Lighthouse audit, empty states audit |
 | **M5.5 — Usability Test** | End of Week 14 | ⬜ Pending | Full flow test with staging build; fix P0 issues before launch |
-| **M6 — Security & Testing** | Week 15–17 | 🔄 In Progress | XSS fixes, dependency patching, unit/component/E2E tests, CI/CD integration |
+| **M6 — Security & Testing** | Week 15–17 | 🔄 In Progress | ✅ XSS fixes, ✅ dependency patching, ✅ ESLint configured, ✅ CI/CD pipeline live, unit/component/E2E tests remaining |
 | **v1.0 Launch** | Week 15–18 | ⬜ Pending | Public launch; moderation workflow documented; analytics instrumented |
 | **v1.1 — Backlog** | Post-launch | ⬜ Planned | Moderation dashboard, batch upload, GeoJSON export, DMs (prototype), artist profiles |
