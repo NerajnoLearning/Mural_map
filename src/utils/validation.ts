@@ -55,7 +55,7 @@ export const validatePhone = (phone: string): string | null => {
   if (!phone) return 'Phone number is required'
 
   // Simple validation - accepts various formats
-  const phoneRegex = /^[\d\s\-\+\(\)]+$/
+  const phoneRegex = /^[\d\s\-+()]+$/
   if (!phoneRegex.test(phone)) {
     return 'Please enter a valid phone number'
   }

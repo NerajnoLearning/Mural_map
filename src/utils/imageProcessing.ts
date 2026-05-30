@@ -56,7 +56,7 @@ export async function compressImage(
     }
   } catch (error) {
     console.error('Error compressing image:', error)
-    throw new Error('Failed to compress image')
+    throw new Error('Failed to compress image', { cause: error })
   }
 }
 

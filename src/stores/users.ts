@@ -70,7 +70,7 @@ export const useUsersStore = defineStore('users', () => {
   // Get user's posts
   const getUserPosts = async (userId: string, currentUserId?: string): Promise<Post[]> => {
     try {
-      let query = supabase
+      const query = supabase
         .from('posts')
         .select(`
           *,
