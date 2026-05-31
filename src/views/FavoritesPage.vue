@@ -1,13 +1,12 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
-import { useAuthStore } from '@/stores/auth'
+import { supabase } from '@/lib/supabase'
 import MasonryGrid from '@/components/feed/MasonryGrid.vue'
 import EmptyState from '@/components/ui/EmptyState.vue'
 import type { Post } from '@/types'
 import { createLogger } from '@/utils/logger'
 
 const logger = createLogger('FavoritesPage')
-const authStore = useAuthStore()
 
 const posts = ref<Post[]>([])
 const loading = ref(false)
@@ -30,8 +29,7 @@ async function fetchFavorites() {
   loading.value = true
   error.value = null
   try {
-    const client = await authStore.getAuthenticatedClient()
-    const { data, error: err } = await client
+    const { data, error: err } = await supabase
       .from('favorites')
       .select(`
         post:posts(

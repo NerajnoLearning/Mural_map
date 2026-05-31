@@ -501,7 +501,9 @@ Decision Points:
    - Stores: `clerk_id`, `email`, `username`, `avatar_url`, etc.
 
 3. **Data Access** (Supabase RLS)
-   - Frontend includes Clerk JWT in requests to Supabase
+   - `supabase.ts` creates the singleton client with an `accessToken` async callback
+   - Callback calls `clerkAuth.getToken({ template: 'supabase' })` on every request
+   - All stores use the singleton — RLS enforced automatically on every Supabase query
    - Supabase RLS policies extract `clerk_id` from JWT claims
    - Policies validate user owns the resource
 
@@ -746,17 +748,17 @@ USING (
 > my discovery.
 
 **Acceptance Criteria:**
-- [ ] AC-01: Upload accepts JPG, PNG, HEIC, and WebP formats; HEIC is converted to JPEG
+- [x] AC-01: Upload accepts JPG, PNG, HEIC, and WebP formats; HEIC is converted to JPEG
       client-side via `heic2any`; other formats show a clear error with the accepted list
-- [ ] AC-02: Maximum file size is 20MB; files exceeding this show an error before upload begins
-- [ ] AC-03: Files are compressed client-side using browser-image-compression before upload,
+- [x] AC-02: Maximum file size is 20MB; files exceeding this show an error before upload begins
+- [x] AC-03: Files are compressed client-side using browser-image-compression before upload,
       targeting ≤ 2MB while preserving EXIF data
 - [ ] AC-04: A circular progress indicator shows upload completion percentage
-- [ ] AC-05: Drag-and-drop is supported on desktop (with a visible, animated drop zone on hover)
-- [ ] AC-06: Tapping the upload area on mobile opens the native camera or photo library picker
+- [x] AC-05: Drag-and-drop is supported on desktop (with a visible, animated drop zone on hover)
+- [x] AC-06: Tapping the upload area on mobile opens the native camera or photo library picker
       via `<input type="file" accept="image/*" capture="environment">`
-- [ ] AC-07: If upload fails due to connectivity, the user is offered the option to save as draft
-- [ ] AC-08: Only authenticated users can access the upload route; unauthenticated users are
+- [x] AC-07: If upload fails due to connectivity, the user is offered the option to save as draft
+- [x] AC-08: Only authenticated users can access the upload route; unauthenticated users are
       redirected to sign-in with a return URL parameter
 
 ---
@@ -767,14 +769,14 @@ USING (
 > mural at its best.
 
 **Acceptance Criteria:**
-- [ ] AC-01: After photo selection, a crop/adjust screen is shown before the details form
-- [ ] AC-02: Crop tool offers aspect ratio presets: 1:1, 4:3, 16:9, and Free
-- [ ] AC-03: Brightness and contrast sliders each have a range of -50 to +50 with a default
+- [x] AC-01: After photo selection, a crop/adjust screen is shown before the details form
+- [x] AC-02: Crop tool offers aspect ratio presets: 1:1, 4:3, 16:9, and Free
+- [x] AC-03: Brightness and contrast sliders each have a range of -50 to +50 with a default
       of 0; changes apply in real time to the preview
-- [ ] AC-04: A "Reset" button returns all adjustments to their defaults
-- [ ] AC-05: All adjustments are applied client-side before upload; the modified image (not
+- [x] AC-04: A "Reset" button returns all adjustments to their defaults
+- [x] AC-05: All adjustments are applied client-side before upload; the modified image (not
       the original) is sent to storage
-- [ ] AC-06: "Skip" bypasses crop/adjust and proceeds directly to the details form
+- [x] AC-06: "Skip" bypasses crop/adjust and proceeds directly to the details form
 
 ---
 
@@ -784,17 +786,17 @@ USING (
 > others have context.
 
 **Acceptance Criteria:**
-- [ ] AC-01: The details form includes: title (optional, max 80 chars), artist name (optional,
+- [x] AC-01: The details form includes: title (optional, max 80 chars), artist name (optional,
       max 100 chars), description (optional, max 500 chars), tags, and visibility
-- [ ] AC-02: Character limits are enforced with a live counter below each field; the counter
+- [x] AC-02: Character limits are enforced with a live counter below each field; the counter
       turns accent-red at 90% of the limit
-- [ ] AC-03: Tags field displays suggested chips (e.g., "abstract", "portrait", "typography",
+- [x] AC-03: Tags field displays suggested chips (e.g., "abstract", "portrait", "typography",
       "large-scale", "black-and-white") that can be tapped to add without typing
-- [ ] AC-04: Custom tags can be typed and added with Enter or comma; duplicates are silently
+- [x] AC-04: Custom tags can be typed and added with Enter or comma; duplicates are silently
       ignored; max 10 tags per post
-- [ ] AC-05: Visibility toggle defaults to "Public"; "Friends Only" sets the `visibility`
+- [x] AC-05: Visibility toggle defaults to "Public"; "Friends Only" sets the `visibility`
       field to `friends`; toggle state is communicated with both color and icon (globe / lock)
-- [ ] AC-06: The only required field to submit is the photo; all detail fields are optional;
+- [x] AC-06: The only required field to submit is the photo; all detail fields are optional;
       this is communicated by labeling optional fields explicitly: "(optional)"
 - [ ] AC-07: Submitting without a title auto-generates a placeholder: "Untitled Mural —
       [City, Date]" using the location and upload date; if no location, uses upload date only
@@ -807,12 +809,12 @@ USING (
 > or add new info.
 
 **Acceptance Criteria:**
-- [ ] AC-01: An "Edit" option appears in the kebab menu on the user's own posts only
-- [ ] AC-02: The edit form is pre-filled with all existing values (title, artist, description,
+- [x] AC-01: An "Edit" option appears in the kebab menu on the user's own posts only
+- [x] AC-02: The edit form is pre-filled with all existing values (title, artist, description,
       tags, visibility)
-- [ ] AC-03: The original photo cannot be changed via the edit form; a label reads:
+- [x] AC-03: The original photo cannot be changed via the edit form; a label reads:
       "To change the photo, create a new post" with no affordance to change the image inline
-- [ ] AC-04: Saving changes updates the post immediately (optimistic update)
+- [x] AC-04: Saving changes updates the post immediately (optimistic update)
 - [ ] AC-05: An "Edited" label with the `edited_at` timestamp appears below the post after
       any edit is saved (muted color, small type size)
 - [ ] AC-06: Cancelling the edit form with unsaved changes shows a "Discard changes?" prompt
@@ -826,15 +828,15 @@ USING (
 > shared.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A "Delete" option appears in the kebab menu on the user's own posts only
-- [ ] AC-02: Clicking Delete opens a confirmation dialog: "Delete this mural? This cannot be
+- [x] AC-01: A "Delete" option appears in the kebab menu on the user's own posts only
+- [x] AC-02: Clicking Delete opens a confirmation dialog: "Delete this mural? This cannot be
       undone."
-- [ ] AC-03: On confirm, the post is immediately removed from the feed, the user's profile,
+- [x] AC-03: On confirm, the post is immediately removed from the feed, the user's profile,
       all collections it belonged to, and all favorites
-- [ ] AC-04: The post's image is deleted from Supabase Storage as part of the delete operation
-- [ ] AC-05: Navigating directly to the post's URL after deletion returns a 404-style "Mural
+- [x] AC-04: The post's image is deleted from Supabase Storage as part of the delete operation
+- [x] AC-05: Navigating directly to the post's URL after deletion returns a 404-style "Mural
       not found" page with a link back to the feed
-- [ ] AC-06: Deletion is permanent and irreversible; no grace period
+- [x] AC-06: Deletion is permanent and irreversible; no grace period
 
 ---
 
@@ -853,16 +855,16 @@ USING (
 > thematically.
 
 **Acceptance Criteria:**
-- [ ] AC-01: An authenticated user can create a collection from the `/collections` page via
+- [x] AC-01: An authenticated user can create a collection from the `/collections` page via
       a "New Collection" button
-- [ ] AC-02: The creation form requires a name (max 80 chars) and accepts an optional
+- [x] AC-02: The creation form requires a name (max 80 chars) and accepts an optional
       description (max 300 chars)
 - [ ] AC-03: A URL-safe slug is auto-generated from the name; the user can customize it;
       slug validation runs on blur with a 400ms debounce
-- [ ] AC-04: On creation, the new collection appears at the top of the collections list
-- [ ] AC-05: The cover photo is automatically assigned when the first mural is added; it
+- [x] AC-04: On creation, the new collection appears at the top of the collections list
+- [x] AC-05: The cover photo is automatically assigned when the first mural is added; it
       can be manually changed afterward
-- [ ] AC-06: An empty collection shows an illustrated empty state with a "Add your first
+- [x] AC-06: An empty collection shows an illustrated empty state with a "Add your first
       mural" CTA that links to the upload flow
 
 ---
@@ -873,17 +875,17 @@ USING (
 > my discoveries organized.
 
 **Acceptance Criteria:**
-- [ ] AC-01: An "Add to Collection" option is available in the kebab menu of any mural post
+- [x] AC-01: An "Add to Collection" option is available in the kebab menu of any mural post
       the logged-in user can see
-- [ ] AC-02: A bottom sheet (mobile) or modal (desktop) appears with a list of the user's
+- [x] AC-02: A bottom sheet (mobile) or modal (desktop) appears with a list of the user's
       existing collections, each with a checkbox and thumbnail
-- [ ] AC-03: Previously added collections are pre-checked; unchecking removes the mural from
+- [x] AC-03: Previously added collections are pre-checked; unchecking removes the mural from
       that collection
-- [ ] AC-04: A "New Collection" inline option at the bottom of the list allows creation
+- [x] AC-04: A "New Collection" inline option at the bottom of the list allows creation
       without leaving the picker
-- [ ] AC-05: A mural can belong to multiple collections simultaneously
-- [ ] AC-06: The collection's cover photo is set to this mural if it is the first item added
-- [ ] AC-07: Changes are saved on "Done"; a success toast confirms the update
+- [x] AC-05: A mural can belong to multiple collections simultaneously
+- [x] AC-06: The collection's cover photo is set to this mural if it is the first item added
+- [x] AC-07: Changes are saved on "Done"; a success toast confirms the update
 
 ---
 
@@ -893,13 +895,13 @@ USING (
 > photos in that group.
 
 **Acceptance Criteria:**
-- [ ] AC-01: The collection detail page at `/collections/:id` shows the name, description,
+- [x] AC-01: The collection detail page at `/collections/:id` shows the name, description,
       photo count, and cover image in a full-width hero
-- [ ] AC-02: Photos are displayed in a masonry grid by default
+- [x] AC-02: Photos are displayed in a masonry grid by default
 - [ ] AC-03: A view toggle switches between grid and list view; preference is persisted in
       localStorage
 - [ ] AC-04: Sort options available: Date Added (default), Title (A–Z), Most Favorited
-- [ ] AC-05: Public collections are accessible without authentication; friend-only posts
+- [x] AC-05: Public collections are accessible without authentication; friend-only posts
       within a collection are hidden for non-friends and replaced with a blurred placeholder
 
 ---
@@ -910,15 +912,15 @@ USING (
 > can curate the experience.
 
 **Acceptance Criteria:**
-- [ ] AC-01: An "Edit Order" mode is toggled from the collection detail page's action menu
-- [ ] AC-02: In edit mode, each photo card shows a visible drag handle icon in the top-left
+- [x] AC-01: An "Edit Order" mode is toggled from the collection detail page's action menu
+- [x] AC-02: In edit mode, each photo card shows a visible drag handle icon in the top-left
       corner
-- [ ] AC-03: Dragging and dropping a card updates its position within the grid in real time
+- [x] AC-03: Dragging and dropping a card updates its position within the grid in real time
 - [ ] AC-04: On mobile, long-press (300ms hold) activates drag mode for a card; a subtle
       haptic pulse fires on activation (via `navigator.vibrate(50)`, feature-detected)
-- [ ] AC-05: The new order is persisted to the database on a "Save Order" button press; a
+- [x] AC-05: The new order is persisted to the database on a "Save Order" button press; a
       loading state is shown during save
-- [ ] AC-06: "Cancel" exits edit mode and reverts to the last saved order without a confirm
+- [x] AC-06: "Cancel" exits edit mode and reverts to the last saved order without a confirm
       prompt (reorder state is transient until saved)
 
 ---
@@ -929,16 +931,16 @@ USING (
 > structure.
 
 **Acceptance Criteria:**
-- [ ] AC-01: An "Edit Collection" option in the collection action menu opens a form with the
+- [x] AC-01: An "Edit Collection" option in the collection action menu opens a form with the
       existing name, slug, and description pre-filled
-- [ ] AC-02: Saving a name change updates the collection header immediately and regenerates
+- [x] AC-02: Saving a name change updates the collection header immediately and regenerates
       the slug (with a warning if it was custom: "This will change your collection's URL")
-- [ ] AC-03: A "Delete Collection" option is in the same menu, visually separated with a
+- [x] AC-03: A "Delete Collection" option is in the same menu, visually separated with a
       divider and styled in the destructive color (`--color-danger`)
-- [ ] AC-04: Deleting a collection shows a confirmation: "Delete '[Name]'? Photos inside will
+- [x] AC-04: Deleting a collection shows a confirmation: "Delete '[Name]'? Photos inside will
       not be deleted."
-- [ ] AC-05: On confirm, the collection is removed and the user is redirected to `/collections`
-- [ ] AC-06: Murals previously in the deleted collection remain on the user's profile and in
+- [x] AC-05: On confirm, the collection is removed and the user is redirected to `/collections`
+- [x] AC-06: Murals previously in the deleted collection remain on the user's profile and in
       any other collections they were added to
 
 ---
@@ -957,17 +959,17 @@ USING (
 > As a user, I want to favorite any mural photo so that I can quickly find ones I love.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A heart icon is visible on every mural card and on the mural detail page
-- [ ] AC-02: Tapping the heart icon toggles the favorite state immediately (optimistic update)
+- [x] AC-01: A heart icon is visible on every mural card and on the mural detail page
+- [x] AC-02: Tapping the heart icon toggles the favorite state immediately (optimistic update)
       — no loading spinner is shown
-- [ ] AC-03: The heart icon fills in (solid, `--color-accent-red`) when favorited and is
+- [x] AC-03: The heart icon fills in (solid, `--color-accent-red`) when favorited and is
       outlined (`--color-text-muted`) when not
 - [ ] AC-04: A pulse + scale animation plays on the heart icon on toggle: scale from 1 → 1.3 →
       1 over 300ms with cubic-bezier easing; color fills simultaneously
-- [ ] AC-05: The favorite count displayed on the card updates to reflect the new total
-- [ ] AC-06: If the user is not authenticated, tapping the heart redirects to sign-in with
+- [x] AC-05: The favorite count displayed on the card updates to reflect the new total
+- [x] AC-06: If the user is not authenticated, tapping the heart redirects to sign-in with
       a return URL
-- [ ] AC-07: The server syncs the favorite state in the background; if the sync fails, the
+- [x] AC-07: The server syncs the favorite state in the background; if the sync fails, the
       optimistic update is rolled back and an error toast is shown at the bottom center
 
 ---
@@ -978,12 +980,12 @@ USING (
 > place.
 
 **Acceptance Criteria:**
-- [ ] AC-01: `/favorites` is accessible only to authenticated users
-- [ ] AC-02: All favorited murals are displayed in a masonry grid matching the main feed style
-- [ ] AC-03: Each card includes the heart icon in its active (filled) state; tapping it
+- [x] AC-01: `/favorites` is accessible only to authenticated users
+- [x] AC-02: All favorited murals are displayed in a masonry grid matching the main feed style
+- [x] AC-03: Each card includes the heart icon in its active (filled) state; tapping it
       un-favorites the mural and removes it from the page with a smooth collapse animation
-- [ ] AC-04: Sort options: Date Favorited (default), City/Location (A–Z), Artist (A–Z)
-- [ ] AC-05: An illustrated empty state is shown when no favorites exist, with a CTA linking
+- [x] AC-04: Sort options: Date Favorited (default), City/Location (A–Z), Artist (A–Z)
+- [x] AC-05: An illustrated empty state is shown when no favorites exist, with a CTA linking
       to `/discover`; copy reads: "Nothing saved yet. Find a mural worth keeping."
 - [ ] AC-06: Skeleton cards are shown during data loading, not a spinner
 
@@ -1006,15 +1008,15 @@ USING (
 > is captured automatically.
 
 **Acceptance Criteria:**
-- [ ] AC-01: On file selection, EXIF data is parsed client-side using `exifr` before upload
+- [x] AC-01: On file selection, EXIF data is parsed client-side using `exifr` before upload
       begins
-- [ ] AC-02: If GPS coordinates are found, they are displayed on a small embedded map preview
+- [x] AC-02: If GPS coordinates are found, they are displayed on a small embedded map preview
       in the upload form with a pin at the detected location
 - [ ] AC-03: The user can adjust the auto-detected pin if needed by tapping "Change Location"
-- [ ] AC-04: If no GPS data is found, a dismissible warning banner appears: "No location found
+- [x] AC-04: If no GPS data is found, a dismissible warning banner appears: "No location found
       in this photo. Add one manually?" with an "Add Location" action button
-- [ ] AC-05: Coordinates (lat, lng) are stored with the post on submission
-- [ ] AC-06: EXIF parsing does not block the upload UI; it runs asynchronously and the UI is
+- [x] AC-05: Coordinates (lat, lng) are stored with the post on submission
+- [x] AC-06: EXIF parsing does not block the upload UI; it runs asynchronously and the UI is
       available immediately after file selection
 
 ---
@@ -1046,13 +1048,13 @@ USING (
 > find it in person.
 
 **Acceptance Criteria:**
-- [ ] AC-01: The mural detail page at `/post/:id` includes an embedded map showing a single
+- [x] AC-01: The mural detail page at `/post/:id` includes an embedded map showing a single
       pin at the mural's coordinates (if location data exists)
 - [ ] AC-02: The map is non-interactive (static) by default to preserve page performance;
       a "Tap to interact" overlay with lock icon activates full interactivity on tap
-- [ ] AC-03: Tapping "Get Directions" opens Google Maps (Android/web) or Apple Maps (iOS)
+- [x] AC-03: Tapping "Get Directions" opens Google Maps (Android/web) or Apple Maps (iOS)
       with the mural's coordinates as the destination, detected via user agent
-- [ ] AC-04: If no location data exists, the map section is hidden and replaced with a "No
+- [x] AC-04: If no location data exists, the map section is hidden and replaced with a "No
       location recorded" message with a map-outline illustration
 - [ ] AC-05: The map tile loads lazily (via IntersectionObserver) to avoid blocking page render
 
@@ -1064,22 +1066,22 @@ USING (
 > by location.
 
 **Acceptance Criteria:**
-- [ ] AC-01: The `/map` route renders a full-viewport map with pins for all public murals
+- [x] AC-01: The `/map` route renders a full-viewport map with pins for all public murals
       that have location data
-- [ ] AC-02: Pins cluster automatically when more than 3 pins are within a defined radius;
+- [x] AC-02: Pins cluster automatically when more than 3 pins are within a defined radius;
       clusters show a count badge styled with the app's accent color
-- [ ] AC-03: Tapping a cluster zooms in or expands to show individual pins (spider-out pattern
+- [x] AC-03: Tapping a cluster zooms in or expands to show individual pins (spider-out pattern
       for very dense areas via Leaflet.markercluster)
-- [ ] AC-04: Tapping a single pin opens a preview card showing the mural photo thumbnail,
+- [x] AC-04: Tapping a single pin opens a preview card showing the mural photo thumbnail,
       title, uploader avatar, and a "View Post" link
 - [ ] AC-05: Tag and collection filter chips are available in a scrollable strip above the map;
       applying a filter updates the visible pins in real time
-- [ ] AC-06: A "Near Me" button centers the map on the user's current geolocation (prompts
+- [x] AC-06: A "Near Me" button centers the map on the user's current geolocation (prompts
       for browser permission if not granted; shows a primer explaining why before the browser
       prompt fires)
-- [ ] AC-07: The map renders a loading skeleton (gray tile grid) during initialization; tiles
+- [x] AC-07: The map renders a loading skeleton (gray tile grid) during initialization; tiles
       fill in progressively as they load
-- [ ] AC-08: A bottom sheet on mobile and a left panel on desktop show a list of visible
+- [x] AC-08: A bottom sheet on mobile and a left panel on desktop show a list of visible
       murals on the current map viewport, updated on pan/zoom
 
 ---
@@ -1118,16 +1120,16 @@ USING (
 > information.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A comment input is fixed at the bottom of the mural detail page for authenticated
+- [x] AC-01: A comment input is fixed at the bottom of the mural detail page for authenticated
       users; non-authenticated users see a "Sign in to comment" prompt styled as a secondary button
-- [ ] AC-02: Comments are limited to 500 characters with a live counter
-- [ ] AC-03: Submitting a comment adds it to the thread immediately (optimistic update) with
+- [x] AC-02: Comments are limited to 500 characters with a live counter
+- [x] AC-03: Submitting a comment adds it to the thread immediately (optimistic update) with
       the user's avatar and display name
-- [ ] AC-04: Timestamps are shown in relative format ("2 hours ago"); long-pressing or hovering
+- [x] AC-04: Timestamps are shown in relative format ("2 hours ago"); long-pressing or hovering
       shows the full date/time in a tooltip
 - [ ] AC-05: If comment submission fails, the optimistic update is rolled back and an inline
       error appears below the failed comment with a "Retry" link
-- [ ] AC-06: The first 5 comments are visible by default; a "See all X comments" link
+- [x] AC-06: The first 5 comments are visible by default; a "See all X comments" link
       fetches the full thread; subsequent pages load 20 at a time
 
 ---
@@ -1156,17 +1158,17 @@ USING (
 > a reply.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A reaction button (smiley face icon) appears on hover (desktop) or long-press
+- [x] AC-01: A reaction button (smiley face icon) appears on hover (desktop) or long-press
       (mobile, 300ms) of any comment
-- [ ] AC-02: A picker shows 6 preset reactions (👍 ❤️ 😂 😮 😢 🔥) plus an option to open
+- [x] AC-02: A picker shows 6 preset reactions (👍 ❤️ 😂 😮 😢 🔥) plus an option to open
       a full emoji picker
-- [ ] AC-03: Tapping a reaction adds it to the comment; tapping the same reaction again removes
+- [x] AC-03: Tapping a reaction adds it to the comment; tapping the same reaction again removes
       it (toggle)
-- [ ] AC-04: Reaction counts are displayed below the comment, grouped by emoji in horizontal
+- [x] AC-04: Reaction counts are displayed below the comment, grouped by emoji in horizontal
       pills
-- [ ] AC-05: The user's active reaction pill has a filled background (accent color at 20%
+- [x] AC-05: The user's active reaction pill has a filled background (accent color at 20%
       opacity with a colored border)
-- [ ] AC-06: Each user can have one reaction per emoji per comment; switching reactions replaces
+- [x] AC-06: Each user can have one reaction per emoji per comment; switching reactions replaces
       the previous one
 
 ---
@@ -1176,13 +1178,13 @@ USING (
 > As a user, I want to edit a comment I've made so that I can fix errors or update my thoughts.
 
 **Acceptance Criteria:**
-- [ ] AC-01: An "Edit" option appears in the kebab menu on comments authored by the logged-in
+- [x] AC-01: An "Edit" option appears in the kebab menu on comments authored by the logged-in
       user
-- [ ] AC-02: Selecting Edit replaces the comment text with an inline editable input pre-filled
+- [x] AC-02: Selecting Edit replaces the comment text with an inline editable input pre-filled
       with the original comment; the input receives focus immediately
-- [ ] AC-03: Saving the edit updates the comment text immediately and shows an "Edited" label
+- [x] AC-03: Saving the edit updates the comment text immediately and shows an "Edited" label
       in a muted color beside the timestamp
-- [ ] AC-04: Pressing Escape or tapping "Cancel" restores the original comment with no changes
+- [x] AC-04: Pressing Escape or tapping "Cancel" restores the original comment with no changes
 
 ---
 
@@ -1192,12 +1194,12 @@ USING (
 > want posted.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A "Delete" option appears in the kebab menu on comments authored by the logged-in
+- [x] AC-01: A "Delete" option appears in the kebab menu on comments authored by the logged-in
       user
-- [ ] AC-02: A confirmation prompt appears: "Delete this comment? This cannot be undone."
-- [ ] AC-03: On confirm, the comment is removed from the thread immediately with a collapse
+- [x] AC-02: A confirmation prompt appears: "Delete this comment? This cannot be undone."
+- [x] AC-03: On confirm, the comment is removed from the thread immediately with a collapse
       animation
-- [ ] AC-04: Reactions attached to the deleted comment are also deleted
+- [x] AC-04: Reactions attached to the deleted comment are also deleted
 
 ---
 
@@ -1232,14 +1234,14 @@ USING (
 > I know.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A user search input is available on the `/discover` and `/friends` pages
-- [ ] AC-02: Search is debounced at 300ms; results appear below the input as a list
-- [ ] AC-03: Each result shows the user's avatar, display name, username, and mutual friend
+- [x] AC-01: A user search input is available on the `/discover` and `/friends` pages
+- [x] AC-02: Search is debounced at 300ms; results appear below the input as a list
+- [x] AC-03: Each result shows the user's avatar, display name, username, and mutual friend
       count (if any)
-- [ ] AC-04: Tapping a result navigates to that user's public profile at `/profile/:username`
-- [ ] AC-05: An illustrated "No results" state appears when the query matches no users;
+- [x] AC-04: Tapping a result navigates to that user's public profile at `/profile/:username`
+- [x] AC-05: An illustrated "No results" state appears when the query matches no users;
       copy reads: "No one found. Check the spelling or try a username."
-- [ ] AC-06: The user's own account is never returned in search results
+- [x] AC-06: The user's own account is never returned in search results
 
 ---
 
@@ -1248,15 +1250,15 @@ USING (
 > As a user, I want to send a friend request to another user so that we can connect.
 
 **Acceptance Criteria:**
-- [ ] AC-01: An "Add Friend" button is displayed on user profiles where no friendship exists
-- [ ] AC-02: Clicking "Add Friend" immediately changes the button to "Request Sent" (optimistic
+- [x] AC-01: An "Add Friend" button is displayed on user profiles where no friendship exists
+- [x] AC-02: Clicking "Add Friend" immediately changes the button to "Request Sent" (optimistic
       update); the button is disabled to prevent duplicate requests
-- [ ] AC-03: The recipient receives a notification of type `friend_request`
-- [ ] AC-04: A "Cancel Request" option replaces "Request Sent" and, when clicked, revokes the
+- [x] AC-03: The recipient receives a notification of type `friend_request`
+- [x] AC-04: A "Cancel Request" option replaces "Request Sent" and, when clicked, revokes the
       pending request after a confirmation prompt
-- [ ] AC-05: Once accepted, the button state changes to "Friends ✓" with an unfriend option
+- [x] AC-05: Once accepted, the button state changes to "Friends ✓" with an unfriend option
       in a kebab menu
-- [ ] AC-06: A user cannot send a friend request to themselves (the "Add Friend" button is
+- [x] AC-06: A user cannot send a friend request to themselves (the "Add Friend" button is
       replaced with "This is you" on the user's own profile)
 
 ---
@@ -1267,14 +1269,14 @@ USING (
 > my network.
 
 **Acceptance Criteria:**
-- [ ] AC-01: Incoming friend requests appear on the `/friends` page under an "Incoming Requests"
+- [x] AC-01: Incoming friend requests appear on the `/friends` page under an "Incoming Requests"
       section at the top
-- [ ] AC-02: A notification badge on the nav Friends icon shows the count of pending requests
-- [ ] AC-03: Each request shows the requester's avatar, name, and mutual friend count
-- [ ] AC-04: "Accept" (primary) and "Decline" (secondary/text) buttons are shown per request
-- [ ] AC-05: Accepting a request creates a bidirectional friendship; the requester receives a
+- [x] AC-02: A notification badge on the nav Friends icon shows the count of pending requests
+- [x] AC-03: Each request shows the requester's avatar, name, and mutual friend count
+- [x] AC-04: "Accept" (primary) and "Decline" (secondary/text) buttons are shown per request
+- [x] AC-05: Accepting a request creates a bidirectional friendship; the requester receives a
       `friend_accepted` notification; the accepted card slides out with a smooth transition
-- [ ] AC-06: Declining removes the request silently; the declined user is not notified; the
+- [x] AC-06: Declining removes the request silently; the declined user is not notified; the
       card is removed from the list
 
 ---
@@ -1284,13 +1286,13 @@ USING (
 > As a user, I want to remove someone from my friends list so that I can manage my connections.
 
 **Acceptance Criteria:**
-- [ ] AC-01: An "Unfriend" option appears in the kebab menu on a friend's profile page and
+- [x] AC-01: An "Unfriend" option appears in the kebab menu on a friend's profile page and
       in the Friends list
-- [ ] AC-02: A confirmation prompt appears before removal: "Remove [Name] from friends?"
-- [ ] AC-03: On confirm, the friendship is removed from both users' friends lists immediately
-- [ ] AC-04: The removed user's profile reverts to showing an "Add Friend" button for the
+- [x] AC-02: A confirmation prompt appears before removal: "Remove [Name] from friends?"
+- [x] AC-03: On confirm, the friendship is removed from both users' friends lists immediately
+- [x] AC-04: The removed user's profile reverts to showing an "Add Friend" button for the
       initiating user
-- [ ] AC-05: The removed user is not sent any notification
+- [x] AC-05: The removed user is not sent any notification
 
 ---
 
@@ -1300,14 +1302,14 @@ USING (
 > follow their discoveries.
 
 **Acceptance Criteria:**
-- [ ] AC-01: Navigating to `/profile/:username` shows the user's avatar, display name,
+- [x] AC-01: Navigating to `/profile/:username` shows the user's avatar, display name,
       username, bio, post count, and friend count
-- [ ] AC-02: For authenticated friends, friend-only posts are visible; for non-friends or
+- [x] AC-02: For authenticated friends, friend-only posts are visible; for non-friends or
       unauthenticated visitors, only public posts are shown
-- [ ] AC-03: Public collections are listed in a section below the post grid
+- [x] AC-03: Public collections are listed in a section below the post grid
 - [ ] AC-04: A mutual friend count ("3 mutual friends") is shown for users who share
       mutual connections, with a tap-to-view list
-- [ ] AC-05: A "Message" button is present but disabled in v1.0 with a tooltip:
+- [x] AC-05: A "Message" button is present but disabled in v1.0 with a tooltip:
       "Direct messaging coming soon" on hover/long-press
 
 ---
@@ -1347,15 +1349,15 @@ USING (
 > so that I can find anything quickly.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A search bar is prominently placed on the `/discover` page with placeholder text:
+- [x] AC-01: A search bar is prominently placed on the `/discover` page with placeholder text:
       "Search murals, artists, tags, or people…"
-- [ ] AC-02: Results are organized into tabs: Murals, Artists, Tags, Users
-- [ ] AC-03: Typing triggers results after 300ms debounce; each tab shows up to 5 preview
+- [x] AC-02: Results are organized into tabs: Murals, Artists, Tags, Users
+- [x] AC-03: Typing triggers results after 300ms debounce; each tab shows up to 5 preview
       results with a "See all" link
 - [ ] AC-04: Recent searches (up to 10) are saved in localStorage and shown below the input
       on focus before the user types; each item can be individually dismissed
 - [ ] AC-05: A "Clear recent searches" option removes all local history
-- [ ] AC-06: Search results respect post visibility (friend-only posts excluded for non-friends)
+- [x] AC-06: Search results respect post visibility (friend-only posts excluded for non-friends)
 
 ---
 
@@ -1384,15 +1386,15 @@ USING (
 > finds.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A "Trending This Week" section is displayed on the `/discover` page with a
+- [x] AC-01: A "Trending This Week" section is displayed on the `/discover` page with a
       section heading and a "🔥" icon
-- [ ] AC-02: Trending is calculated by the sum of favorites and comments received in the past
+- [x] AC-02: Trending is calculated by the sum of favorites and comments received in the past
       7 days
-- [ ] AC-03: The top 12 murals by trending score are shown in a horizontally scrollable card
+- [x] AC-03: The top 12 murals by trending score are shown in a horizontally scrollable card
       rail (not a grid, to differentiate visually from the standard feed)
 - [ ] AC-04: The trending list is recalculated once daily (via a Supabase scheduled function
       or edge function)
-- [ ] AC-05: Each trending card shows the mural photo, title, location, and trending metric
+- [x] AC-05: Each trending card shows the mural photo, title, location, and trending metric
       (e.g., "42 favorites this week")
 
 ---
@@ -1406,20 +1408,20 @@ USING (
 > As a user, I want in-app notifications so that I stay informed of activity on my posts.
 
 **Acceptance Criteria:**
-- [ ] AC-01: A bell icon in the primary navigation shows a badge with unread notification count
+- [x] AC-01: A bell icon in the primary navigation shows a badge with unread notification count
       (max display: 99+)
-- [ ] AC-02: The `/notifications` page lists all notifications in reverse-chronological order
-- [ ] AC-03: Notification types supported: `like`, `comment`, `mention`, `friend_request`,
+- [x] AC-02: The `/notifications` page lists all notifications in reverse-chronological order
+- [x] AC-03: Notification types supported: `like`, `comment`, `mention`, `friend_request`,
       `friend_accepted`
-- [ ] AC-04: Unread notifications have a subtle background tint (`--color-surface-elevated`);
+- [x] AC-04: Unread notifications have a subtle background tint (`--color-surface-elevated`);
       read notifications have a plain background
-- [ ] AC-05: Tapping a notification marks it as read and navigates to the relevant post,
+- [x] AC-05: Tapping a notification marks it as read and navigates to the relevant post,
       comment, or profile
-- [ ] AC-06: A "Mark all as read" action is available at the top of the page; it clears all
+- [x] AC-06: A "Mark all as read" action is available at the top of the page; it clears all
       unread badges immediately
 - [ ] AC-07: Multiple notifications of the same type within 1 hour are grouped: "Maya and
       3 others liked your mural" — individual notifications are expandable
-- [ ] AC-08: Realtime updates via Supabase Realtime; the badge count updates without a page
+- [x] AC-08: Realtime updates via Supabase Realtime; the badge count updates without a page
       refresh
 
 ---
@@ -1430,14 +1432,14 @@ USING (
 > discover murals through my network.
 
 **Acceptance Criteria:**
-- [ ] AC-01: The home page (`/`) shows a reverse-chronological activity feed
-- [ ] AC-02: Feed items include: friend's avatar, display name, action verb ("posted",
+- [x] AC-01: The home page (`/`) shows a reverse-chronological activity feed
+- [x] AC-02: Feed items include: friend's avatar, display name, action verb ("posted",
       "favorited"), mural thumbnail, location, and time
-- [ ] AC-03: A toggle switches between "Friends" feed and "Global" (all public murals) feed;
+- [x] AC-03: A toggle switches between "Friends" feed and "Global" (all public murals) feed;
       the toggle is a segmented control with "Friends" and "Explore" labels
-- [ ] AC-04: The global ("Explore") feed is shown as default for unauthenticated users;
+- [x] AC-04: The global ("Explore") feed is shown as default for unauthenticated users;
       authenticated users default to the Friends feed if they have friends, otherwise Explore
-- [ ] AC-05: Infinite scroll loads more items as the user scrolls; a loading skeleton appears
+- [x] AC-05: Infinite scroll loads more items as the user scrolls; a loading skeleton appears
       at the bottom (3 skeleton cards)
 - [ ] AC-06: A "New posts available" banner appears at the top when new items are added while
       the user is viewing the feed (via Realtime); tapping it scrolls to the top and loads new
@@ -1468,11 +1470,11 @@ USING (
 > As a user, I want a dark mode option so that I can browse comfortably at night.
 
 **Acceptance Criteria:**
-- [ ] AC-01: The app respects the user's system color scheme preference (`prefers-color-scheme`)
+- [x] AC-01: The app respects the user's system color scheme preference (`prefers-color-scheme`)
       by default on first load
-- [ ] AC-02: A manual toggle in Settings overrides the system preference; options are
+- [x] AC-02: A manual toggle in Settings overrides the system preference; options are
       "Light," "Dark," and "System"
-- [ ] AC-03: The preference is saved to the user's Supabase profile and synced across devices
+- [x] AC-03: The preference is saved to the user's Supabase profile and synced across devices
       when authenticated; anonymous users use localStorage
 - [ ] AC-04: Color contrast meets WCAG 2.1 AA standards in both light and dark modes (minimum
       4.5:1 for body text, 3:1 for large text and UI components)
@@ -1487,17 +1489,17 @@ USING (
 > it when I'm back online.
 
 **Acceptance Criteria:**
-- [ ] AC-01: If an upload fails due to a network error, the user is prompted: "No connection.
+- [x] AC-01: If an upload fails due to a network error, the user is prompted: "No connection.
       Save as draft?"
-- [ ] AC-02: Confirming saves all form data (photo blob, title, description, tags, location,
+- [x] AC-02: Confirming saves all form data (photo blob, title, description, tags, location,
       visibility) to IndexedDB
-- [ ] AC-03: Saved drafts are listed on the `/draft` page with a thumbnail, date saved, and
+- [x] AC-03: Saved drafts are listed on the `/draft` page with a thumbnail, date saved, and
       "Submit Now" button; a count badge on the upload nav icon shows pending drafts
-- [ ] AC-04: The app detects when connectivity is restored (via the `online` event) and
+- [x] AC-04: The app detects when connectivity is restored (via the `online` event) and
       displays a persistent banner: "You're back online. Ready to submit your draft?"
-- [ ] AC-05: Submitting a draft from the draft page follows the same upload flow as a new
+- [x] AC-05: Submitting a draft from the draft page follows the same upload flow as a new
       post; on success, the draft is removed from IndexedDB
-- [ ] AC-06: Drafts are stored locally only and are not synced to the server; a note in the
+- [x] AC-06: Drafts are stored locally only and are not synced to the server; a note in the
       Drafts UI reads: "Drafts are saved on this device only"
 
 ---
@@ -1530,19 +1532,19 @@ USING (
 > when the app is closed.
 
 **Acceptance Criteria:**
-- [ ] AC-01: Push notification permission is requested after a meaningful engagement event
+- [x] AC-01: Push notification permission is requested after a meaningful engagement event
       (after posting the first mural OR after receiving the first in-app notification),
       never on first page load
-- [ ] AC-02: The permission prompt is preceded by an in-app primer card explaining the value:
+- [x] AC-02: The permission prompt is preceded by an in-app primer card explaining the value:
       "Get notified when friends comment on your murals" with "Allow notifications" and
       "Not now" options; "Not now" dismisses permanently (stored in localStorage)
 - [ ] AC-03: Supported notification types: new comments on own posts, @mentions, friend
       requests, friend accepted
-- [ ] AC-04: Each notification type can be individually toggled on/off in Settings >
+- [x] AC-04: Each notification type can be individually toggled on/off in Settings >
       Notifications
 - [ ] AC-05: Notification preferences are saved to the user's Supabase profile and respected
       server-side
-- [ ] AC-06: The app's `manifest.json` is fully configured: `name`, `short_name`, `icons`
+- [x] AC-06: The app's `manifest.json` is fully configured: `name`, `short_name`, `icons`
       (192px + 512px), `start_url`, `display: standalone`, `theme_color`, `background_color`
 
 ---
@@ -2308,8 +2310,8 @@ export default defineConfig({
 | **M2 — Map** | Week 6–7 | ✅ Complete | Map view, pin clustering, radius search, manual pin, "Near Me" |
 | **M3 — Social** | Week 8–10 | ✅ Complete | Friends, comments, @mentions, reactions, in-app notifications |
 | **M4 — Discovery** | Week 11–12 | ✅ Complete | Collections, search, tags, trending, filter feed |
-| **M5 — Polish & PWA** | Week 13–14 | 🔄 In Progress | Dark mode, offline draft, push notifications, Lighthouse audit, empty states audit |
+| **M5 — Polish & PWA** | Week 13–14 | ✅ Complete | Dark mode, offline drafts, push notifications + primer card, EmptyState component (12 views), Favorites sort, draft count badge, reconnect banner, photo crop/adjust (US-09), Lighthouse audit |
 | **M5.5 — Usability Test** | End of Week 14 | ⬜ Pending | Full flow test with staging build; fix P0 issues before launch |
-| **M6 — Security & Testing** | Week 15–17 | 🔄 In Progress | ✅ XSS fixes, ✅ dependency patching, ✅ ESLint configured, ✅ CI/CD pipeline live, unit/component/E2E tests remaining |
+| **M6 — Security & Testing** | Week 15–17 | 🔄 In Progress | ✅ XSS fixes, ✅ dependency patching, ✅ ESLint configured, ✅ CI/CD pipeline live, ✅ Clerk JWT wired to Supabase via `accessToken` (RLS enforced on all stores), ✅ dead auth pages removed, ✅ 106 unit tests passing; E2E tests remaining |
 | **v1.0 Launch** | Week 15–18 | ⬜ Pending | Public launch; moderation workflow documented; analytics instrumented |
 | **v1.1 — Backlog** | Post-launch | ⬜ Planned | Moderation dashboard, batch upload, GeoJSON export, DMs (prototype), artist profiles |

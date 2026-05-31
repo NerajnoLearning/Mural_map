@@ -20,11 +20,15 @@ vi.mock('@clerk/vue', () => ({
   useUser: () => ({
     user: mockClerkState.user,
   }),
+  useClerk: () => ({ value: { signOut: vi.fn() } }),
 }))
+
+const mockSetTokenProvider = vi.hoisted(() => vi.fn())
 
 // Mock Supabase client
 vi.mock('@/lib/supabase', () => ({
   supabase: mockSupabase,
+  setTokenProvider: mockSetTokenProvider,
 }))
 
 import { useAuthStore } from '@/stores/auth'
@@ -33,6 +37,7 @@ describe('Auth Store', () => {
   beforeEach(() => {
     setActivePinia(createPinia())
     resetSupabaseMocks()
+    mockSetTokenProvider.mockReset()
     mockClerkState.isSignedIn.value = false
     mockClerkState.user.value = null
     mockClerkState.getToken.mockReset()
@@ -101,24 +106,11 @@ describe('Auth Store', () => {
       expect(mockSupabase.from).not.toHaveBeenCalled()
     })
 
-    it('should request a Supabase-scoped Clerk token during sync', async () => {
-      mockClerkState.isSignedIn.value = true
-      mockClerkState.user.value = {
-        id: 'clerk-user-id',
-        primaryEmailAddress: { emailAddress: 'test@example.com' },
-        username: 'testuser',
-        firstName: 'Test',
-        lastName: 'User',
-        imageUrl: 'https://example.com/avatar.jpg',
-      }
-      mockSupabase.from.mockReturnValueOnce({
-        upsert: vi.fn(() => Promise.resolve({ error: null })),
-      })
-
+    it('should register Clerk token provider with Supabase on initialization', () => {
       const authStore = useAuthStore()
-      await authStore.syncUserToSupabase()
-
-      expect(mockClerkState.getToken).toHaveBeenCalledWith({ template: 'supabase' })
+      // Trigger initializeClerk by accessing a computed
+      void authStore.isAuthenticated
+      expect(mockSetTokenProvider).toHaveBeenCalledWith(expect.any(Function))
     })
 
     it('should set synced to true after a successful sync', async () => {
@@ -142,36 +134,5 @@ describe('Auth Store', () => {
       expect(authStore.syncing).toBe(false)
     })
 
-    it('should not set synced when token is missing', async () => {
-      mockClerkState.isSignedIn.value = true
-      mockClerkState.user.value = {
-        id: 'clerk-user-id',
-        primaryEmailAddress: { emailAddress: 'test@example.com' },
-        username: 'testuser',
-      }
-      mockClerkState.getToken.mockResolvedValueOnce(null)
-
-      const authStore = useAuthStore()
-      await authStore.syncUserToSupabase()
-
-      expect(authStore.synced).toBe(false)
-      expect(mockSupabase.from).not.toHaveBeenCalled()
-    })
-  })
-
-  describe('getAuthenticatedClient', () => {
-    it('should return a client when not signed in', async () => {
-      mockClerkState.isSignedIn.value = false
-      const authStore = useAuthStore()
-      const client = await authStore.getAuthenticatedClient()
-      expect(client).toBeTruthy()
-    })
-
-    it('should return a client when signed in', async () => {
-      mockClerkState.isSignedIn.value = true
-      const authStore = useAuthStore()
-      const client = await authStore.getAuthenticatedClient()
-      expect(client).toBeTruthy()
-    })
   })
 })

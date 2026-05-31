@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { ref, computed } from 'vue'
 import { useAuth, useUser, useClerk } from '@clerk/vue'
-import { supabase, getAuthenticatedClient as createAuthClient } from '@/lib/supabase'
+import { supabase, setTokenProvider } from '@/lib/supabase'
 import { createLogger } from '@/utils/logger'
 
 const logger = createLogger('AuthStore')
@@ -23,6 +23,8 @@ export const useAuthStore = defineStore('auth', () => {
       clerkUser = useUser()
       clerkInstance = useClerk()
       clerkInitialized = true
+      // Wire Clerk JWT into the Supabase singleton so all stores get RLS enforcement
+      setTokenProvider(() => clerkAuth.getToken({ template: 'supabase' }))
       logger.info('Clerk initialized successfully')
     } catch (err) {
       logger.warn('Clerk not available:', err)
@@ -75,7 +77,7 @@ export const useAuthStore = defineStore('auth', () => {
     logger.warn('resetPassword called on auth store — use Clerk forgot password instead')
   }
 
-  // Sync Clerk user to Supabase
+  // Sync Clerk user to Supabase — supabase singleton auto-includes Clerk JWT via setTokenProvider
   async function syncUserToSupabase() {
     if (!clerkInitialized) initializeClerk()
 
@@ -85,13 +87,6 @@ export const useAuthStore = defineStore('auth', () => {
     syncing.value = true
 
     try {
-      const token = await clerkAuth.getToken({ template: 'supabase' })
-
-      if (!token) {
-        logger.error('No Clerk token available')
-        return
-      }
-
       const u = clerkUser.user.value
 
       const { error } = await supabase
@@ -118,23 +113,6 @@ export const useAuthStore = defineStore('auth', () => {
     }
   }
 
-  async function getAuthenticatedClient() {
-    if (!clerkInitialized) initializeClerk()
-
-    if (!clerkAuth?.isSignedIn?.value) return supabase
-
-    try {
-      const token = await clerkAuth.getToken({ template: 'supabase' })
-      if (token) {
-        return createAuthClient(token)
-      }
-    } catch (err) {
-      logger.error('Error getting auth token:', err)
-    }
-
-    return supabase
-  }
-
   return {
     isAuthenticated,
     isLoaded,
@@ -148,6 +126,5 @@ export const useAuthStore = defineStore('auth', () => {
     signInWithOAuth,
     resetPassword,
     syncUserToSupabase,
-    getAuthenticatedClient
   }
 })

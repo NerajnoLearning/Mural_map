@@ -2,36 +2,30 @@ import { createClient } from '@supabase/supabase-js'
 import type { Database } from '@/types/supabase'
 import { getEnvironmentConfig } from '@/utils/env'
 
-// Get validated environment config
 const env = getEnvironmentConfig()
 const supabaseUrl = env.supabaseUrl
 const supabaseAnonKey = env.supabaseAnonKey
 
-// Create Supabase client configured for Clerk authentication
+// Set by auth store after Clerk initializes; provides JWT for every Supabase request
+let _tokenProvider: (() => Promise<string | null>) | null = null
+
+export const setTokenProvider = (fn: () => Promise<string | null>) => {
+  _tokenProvider = fn
+}
+
 export const supabase = createClient<Database>(supabaseUrl, supabaseAnonKey, {
   auth: {
-    // Disable Supabase's built-in auth since we're using Clerk
     autoRefreshToken: false,
     persistSession: false,
     detectSessionInUrl: false,
   },
+  accessToken: async () => {
+    if (_tokenProvider) {
+      return (await _tokenProvider()) ?? null
+    }
+    return null
+  },
 })
-
-// Returns a Supabase client with Clerk JWT injected for authenticated requests
-export const getAuthenticatedClient = (token: string) => {
-  return createClient<Database>(supabaseUrl, supabaseAnonKey, {
-    auth: {
-      autoRefreshToken: false,
-      persistSession: false,
-      detectSessionInUrl: false,
-    },
-    global: {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    },
-  })
-}
 
 // Helper functions for common operations
 
