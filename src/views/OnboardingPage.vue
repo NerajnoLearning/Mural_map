@@ -183,8 +183,12 @@ const skipOnboarding = () => {
     <div class="w-full max-w-lg">
       <!-- Header -->
       <div class="text-center mb-32">
-        <h1 class="text-3xl font-bold text-primary mb-8">Welcome to MuralMap! 🎨</h1>
-        <p class="text-text-muted">Let's set up your profile</p>
+        <h1 class="text-3xl font-bold text-primary mb-8">
+          Welcome to MuralMap! 🎨
+        </h1>
+        <p class="text-text-muted">
+          Let's set up your profile
+        </p>
       </div>
 
       <!-- Progress Indicator -->
@@ -196,14 +200,21 @@ const skipOnboarding = () => {
             'w-32 h-8 rounded-full transition-all',
             step === currentStep ? 'bg-primary' : step < currentStep ? 'bg-success' : 'bg-border'
           ]"
-        ></div>
+        />
       </div>
 
       <!-- Step 1: Display Name -->
-      <div v-if="currentStep === 1" class="space-y-24">
+      <div
+        v-if="currentStep === 1"
+        class="space-y-24"
+      >
         <div>
-          <h2 class="text-2xl font-bold text-text mb-8">What should we call you?</h2>
-          <p class="text-text-muted">This is how other users will see your name</p>
+          <h2 class="text-2xl font-bold text-text mb-8">
+            What should we call you?
+          </h2>
+          <p class="text-text-muted">
+            This is how other users will see your name
+          </p>
         </div>
 
         <BaseInput
@@ -237,10 +248,17 @@ const skipOnboarding = () => {
       </div>
 
       <!-- Step 2: Username -->
-      <div v-if="currentStep === 2" class="space-y-24">
+      <div
+        v-if="currentStep === 2"
+        class="space-y-24"
+      >
         <div>
-          <h2 class="text-2xl font-bold text-text mb-8">Choose a username</h2>
-          <p class="text-text-muted">Your unique identifier on MuralMap</p>
+          <h2 class="text-2xl font-bold text-text mb-8">
+            Choose a username
+          </h2>
+          <p class="text-text-muted">
+            Your unique identifier on MuralMap
+          </p>
         </div>
 
         <div>
@@ -256,15 +274,37 @@ const skipOnboarding = () => {
             @blur="handleUsernameBlur"
           />
 
-          <div v-if="isCheckingUsername" class="mt-8 text-sm text-text-muted flex items-center gap-8">
-            <svg class="animate-spin h-14 w-14" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-              <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-              <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <div
+            v-if="isCheckingUsername"
+            class="mt-8 text-sm text-text-muted flex items-center gap-8"
+          >
+            <svg
+              class="animate-spin h-14 w-14"
+              xmlns="http://www.w3.org/2000/svg"
+              fill="none"
+              viewBox="0 0 24 24"
+            >
+              <circle
+                class="opacity-25"
+                cx="12"
+                cy="12"
+                r="10"
+                stroke="currentColor"
+                stroke-width="4"
+              />
+              <path
+                class="opacity-75"
+                fill="currentColor"
+                d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+              />
             </svg>
             Checking availability...
           </div>
 
-          <div v-if="usernameAvailable && username && !usernameError" class="mt-8 text-sm text-success flex items-center gap-8">
+          <div
+            v-if="usernameAvailable && username && !usernameError"
+            class="mt-8 text-sm text-success flex items-center gap-8"
+          >
             ✓ Username available
           </div>
         </div>
@@ -290,10 +330,17 @@ const skipOnboarding = () => {
       </div>
 
       <!-- Step 3: Avatar & Bio -->
-      <div v-if="currentStep === 3" class="space-y-24">
+      <div
+        v-if="currentStep === 3"
+        class="space-y-24"
+      >
         <div>
-          <h2 class="text-2xl font-bold text-text mb-8">Personalize your profile</h2>
-          <p class="text-text-muted">Add a photo and tell us about yourself (optional)</p>
+          <h2 class="text-2xl font-bold text-text mb-8">
+            Personalize your profile
+          </h2>
+          <p class="text-text-muted">
+            Add a photo and tell us about yourself (optional)
+          </p>
         </div>
 
         <!-- Avatar Upload -->
@@ -307,8 +354,11 @@ const skipOnboarding = () => {
                   :src="avatarPreview"
                   alt="Avatar preview"
                   class="w-full h-full object-cover"
-                />
-                <div v-else class="w-full h-full flex items-center justify-center text-4xl text-text-muted">
+                >
+                <div
+                  v-else
+                  class="w-full h-full flex items-center justify-center text-4xl text-text-muted"
+                >
                   {{ displayName?.charAt(0).toUpperCase() || '?' }}
                 </div>
               </div>
@@ -316,12 +366,12 @@ const skipOnboarding = () => {
 
             <div class="flex-1">
               <input
-                type="file"
                 id="avatar-upload"
+                type="file"
                 accept="image/*"
                 class="hidden"
                 @change="handleAvatarChange"
-              />
+              >
               <label for="avatar-upload">
                 <BaseButton
                   variant="outline"
@@ -332,7 +382,9 @@ const skipOnboarding = () => {
                   Choose Photo
                 </BaseButton>
               </label>
-              <p class="text-sm text-text-muted mt-8">JPG, PNG or GIF. Max 5MB</p>
+              <p class="text-sm text-text-muted mt-8">
+                JPG, PNG or GIF. Max 5MB
+              </p>
             </div>
           </div>
         </div>
@@ -346,7 +398,7 @@ const skipOnboarding = () => {
             maxlength="160"
             rows="4"
             class="w-full px-16 py-12 rounded-lg border-2 border-border bg-surface text-text placeholder:text-text-muted focus:outline-none focus:ring-2 focus:ring-primary focus:border-primary transition-colors resize-none"
-          ></textarea>
+          />
           <p class="mt-8 text-sm text-text-muted text-right">
             {{ bio.length }} / 160
           </p>

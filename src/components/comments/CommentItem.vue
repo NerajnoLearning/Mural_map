@@ -132,16 +132,19 @@ const formatDate = (dateString: string) => {
     <div class="flex items-start gap-12">
       <!-- Avatar -->
       <button
-        @click="goToProfile"
         class="w-40 h-40 rounded-full bg-primary/10 overflow-hidden flex items-center justify-center flex-shrink-0 hover:opacity-75 transition"
+        @click="goToProfile"
       >
         <img
           v-if="comment.user?.avatar_url"
           :src="comment.user.avatar_url"
           :alt="comment.user.display_name || comment.user.username"
           class="w-full h-full object-cover"
-        />
-        <span v-else class="text-sm font-bold text-primary">
+        >
+        <span
+          v-else
+          class="text-sm font-bold text-primary"
+        >
           {{ (comment.user?.display_name || comment.user?.username || '?').charAt(0).toUpperCase() }}
         </span>
       </button>
@@ -152,43 +155,72 @@ const formatDate = (dateString: string) => {
         <div class="flex items-start justify-between gap-12 mb-8">
           <div class="min-w-0">
             <button
-              @click="goToProfile"
               class="font-medium text-text hover:text-primary transition truncate"
+              @click="goToProfile"
             >
               {{ comment.user?.display_name || comment.user?.username || 'Unknown' }}
             </button>
             <span class="text-sm text-text-muted ml-8">
               {{ formatDate(comment.created_at) }}
-              <span v-if="comment.edited" class="ml-4">(edited)</span>
+              <span
+                v-if="comment.edited"
+                class="ml-4"
+              >(edited)</span>
             </span>
           </div>
 
           <!-- Actions -->
-          <div v-if="isOwnComment && !isEditing" class="flex gap-4 flex-shrink-0">
+          <div
+            v-if="isOwnComment && !isEditing"
+            class="flex gap-4 flex-shrink-0"
+          >
             <button
-              @click="startEdit"
               class="p-4 text-text-muted hover:text-primary transition"
               aria-label="Edit"
+              @click="startEdit"
             >
-              <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
+              <svg
+                class="w-16 h-16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
+                />
               </svg>
             </button>
             <button
-              @click="handleDelete"
               class="p-4 text-text-muted hover:text-error transition"
               aria-label="Delete"
               :disabled="isSubmitting"
+              @click="handleDelete"
             >
-              <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+              <svg
+                class="w-16 h-16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                />
               </svg>
             </button>
           </div>
         </div>
 
         <!-- Body (edit mode) -->
-        <div v-if="isEditing" class="mb-12">
+        <div
+          v-if="isEditing"
+          class="mb-12"
+        >
           <textarea
             v-model="editBody"
             class="w-full px-12 py-8 bg-surface border-2 border-border rounded-lg text-text placeholder-text-muted focus:outline-none focus:border-primary transition resize-none"
@@ -200,17 +232,17 @@ const formatDate = (dateString: string) => {
             <BaseButton
               variant="outline"
               size="sm"
-              @click="cancelEdit"
               :disabled="isSubmitting"
+              @click="cancelEdit"
             >
               Cancel
             </BaseButton>
             <BaseButton
               variant="primary"
               size="sm"
-              @click="saveEdit"
               :loading="isSubmitting"
               :disabled="!editBody.trim()"
+              @click="saveEdit"
             >
               Save
             </BaseButton>
@@ -218,7 +250,10 @@ const formatDate = (dateString: string) => {
         </div>
 
         <!-- Body (view mode) -->
-        <p v-else class="text-text whitespace-pre-wrap break-words mb-12">
+        <p
+          v-else
+          class="text-text whitespace-pre-wrap break-words mb-12"
+        >
           {{ safeCommentBody }}
         </p>
 
@@ -228,24 +263,37 @@ const formatDate = (dateString: string) => {
           <button
             v-for="(count, emoji) in reactionCounts"
             :key="emoji"
-            @click="handleReaction(String(emoji))"
             class="px-8 py-4 rounded-full text-sm transition flex items-center gap-4"
             :class="hasReacted(String(emoji))
               ? 'bg-primary/20 text-primary'
               : 'bg-surface hover:bg-surface-overlay text-text'"
+            @click="handleReaction(String(emoji))"
           >
             <span>{{ emoji }}</span>
             <span class="text-xs font-medium">{{ count }}</span>
           </button>
 
           <!-- Add reaction dropdown -->
-          <div v-if="authStore.isAuthenticated" class="relative group">
+          <div
+            v-if="authStore.isAuthenticated"
+            class="relative group"
+          >
             <button
               class="p-6 text-text-muted hover:text-primary hover:bg-surface-overlay rounded-full transition"
               aria-label="Add reaction"
             >
-              <svg class="w-16 h-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <svg
+                class="w-16 h-16"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M14.828 14.828a4 4 0 01-5.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+                />
               </svg>
             </button>
 
@@ -255,9 +303,9 @@ const formatDate = (dateString: string) => {
                 <button
                   v-for="emoji in commonEmojis"
                   :key="emoji"
-                  @click="handleReaction(emoji)"
                   class="text-xl hover:scale-125 transition-transform"
                   :class="hasReacted(emoji) ? 'opacity-50' : ''"
+                  @click="handleReaction(emoji)"
                 >
                   {{ emoji }}
                 </button>

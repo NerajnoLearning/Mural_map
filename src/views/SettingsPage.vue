@@ -155,8 +155,12 @@ const handleSignOut = async () => {
     <div class="max-w-4xl mx-auto">
       <!-- Header -->
       <header class="sticky top-0 z-10 bg-surface-elevated border-b border-border px-16 py-16">
-        <h1 class="text-2xl font-bold text-text">Settings</h1>
-        <p class="text-sm text-text-muted mt-4">Manage your account and preferences</p>
+        <h1 class="text-2xl font-bold text-text">
+          Settings
+        </h1>
+        <p class="text-sm text-text-muted mt-4">
+          Manage your account and preferences
+        </p>
       </header>
 
       <div class="flex flex-col md:flex-row gap-24 p-16 sm:p-24">
@@ -164,38 +168,38 @@ const handleSignOut = async () => {
         <aside class="md:w-240 flex-shrink-0">
           <nav class="space-y-4">
             <button
-              @click="activeTab = 'account'"
               class="w-full px-16 py-12 rounded-lg text-left font-medium transition"
               :class="activeTab === 'account'
                 ? 'bg-primary text-white'
                 : 'bg-surface-elevated text-text hover:bg-surface-overlay'"
+              @click="activeTab = 'account'"
             >
               Account
             </button>
             <button
-              @click="activeTab = 'privacy'"
               class="w-full px-16 py-12 rounded-lg text-left font-medium transition"
               :class="activeTab === 'privacy'
                 ? 'bg-primary text-white'
                 : 'bg-surface-elevated text-text hover:bg-surface-overlay'"
+              @click="activeTab = 'privacy'"
             >
               Privacy
             </button>
             <button
-              @click="activeTab = 'notifications'"
               class="w-full px-16 py-12 rounded-lg text-left font-medium transition"
               :class="activeTab === 'notifications'
                 ? 'bg-primary text-white'
                 : 'bg-surface-elevated text-text hover:bg-surface-overlay'"
+              @click="activeTab = 'notifications'"
             >
               Notifications
             </button>
             <button
-              @click="activeTab = 'appearance'"
               class="w-full px-16 py-12 rounded-lg text-left font-medium transition"
               :class="activeTab === 'appearance'
                 ? 'bg-primary text-white'
                 : 'bg-surface-elevated text-text hover:bg-surface-overlay'"
+              @click="activeTab = 'appearance'"
             >
               Appearance
             </button>
@@ -205,9 +209,14 @@ const handleSignOut = async () => {
         <!-- Content -->
         <main class="flex-1">
           <!-- Account Tab -->
-          <div v-if="activeTab === 'account'" class="space-y-24">
+          <div
+            v-if="activeTab === 'account'"
+            class="space-y-24"
+          >
             <section class="bg-surface-elevated p-24 rounded-lg">
-              <h2 class="text-xl font-bold text-text mb-16">Profile Information</h2>
+              <h2 class="text-xl font-bold text-text mb-16">
+                Profile Information
+              </h2>
 
               <div class="space-y-16">
                 <BaseInput
@@ -232,9 +241,9 @@ const handleSignOut = async () => {
                 </div>
 
                 <BaseButton
-                  @click="handleSaveProfile"
                   variant="primary"
                   :loading="savingProfile"
+                  @click="handleSaveProfile"
                 >
                   Save Changes
                 </BaseButton>
@@ -242,28 +251,45 @@ const handleSignOut = async () => {
             </section>
 
             <section class="bg-surface-elevated p-24 rounded-lg">
-              <h2 class="text-xl font-bold text-text mb-16">Account Actions</h2>
-              <BaseButton @click="handleSignOut" variant="outline" full-width>
+              <h2 class="text-xl font-bold text-text mb-16">
+                Account Actions
+              </h2>
+              <BaseButton
+                variant="outline"
+                full-width
+                @click="handleSignOut"
+              >
                 Sign Out
               </BaseButton>
             </section>
 
             <!-- Danger Zone -->
             <section class="p-24 rounded-lg border-2 border-error/40">
-              <h2 class="text-xl font-bold text-error mb-4">Danger Zone</h2>
+              <h2 class="text-xl font-bold text-error mb-4">
+                Danger Zone
+              </h2>
               <p class="text-sm text-text-muted mb-16">
                 These actions are permanent and cannot be undone.
               </p>
-              <BaseButton @click="confirmDeleteAccount" variant="danger" full-width>
+              <BaseButton
+                variant="danger"
+                full-width
+                @click="confirmDeleteAccount"
+              >
                 Delete Account
               </BaseButton>
             </section>
           </div>
 
           <!-- Privacy Tab -->
-          <div v-else-if="activeTab === 'privacy'" class="space-y-24">
+          <div
+            v-else-if="activeTab === 'privacy'"
+            class="space-y-24"
+          >
             <section class="bg-surface-elevated p-24 rounded-lg">
-              <h2 class="text-xl font-bold text-text mb-16">Privacy Settings</h2>
+              <h2 class="text-xl font-bold text-text mb-16">
+                Privacy Settings
+              </h2>
 
               <div class="space-y-16">
                 <div>
@@ -272,31 +298,39 @@ const handleSignOut = async () => {
                     v-model="defaultVisibility"
                     class="w-full px-12 py-8 bg-surface border-2 border-border rounded-lg text-text focus:outline-none focus:border-primary transition"
                   >
-                    <option value="public">Public - Anyone can see</option>
-                    <option value="friends">Friends Only - Only friends can see</option>
+                    <option value="public">
+                      Public - Anyone can see
+                    </option>
+                    <option value="friends">
+                      Friends Only - Only friends can see
+                    </option>
                   </select>
                 </div>
 
                 <div class="flex items-center justify-between">
                   <div>
-                    <p class="font-medium text-text">Show Location on Posts</p>
-                    <p class="text-sm text-text-muted">Display city/location on your murals</p>
+                    <p class="font-medium text-text">
+                      Show Location on Posts
+                    </p>
+                    <p class="text-sm text-text-muted">
+                      Display city/location on your murals
+                    </p>
                   </div>
                   <label class="relative inline-flex items-center cursor-pointer">
                     <input
                       v-model="showLocation"
                       type="checkbox"
                       class="sr-only peer"
-                    />
-                    <div class="w-48 h-24 bg-surface-overlay rounded-full peer peer-checked:bg-primary transition"></div>
-                    <div class="absolute left-4 top-4 w-16 h-16 bg-white rounded-full transition peer-checked:translate-x-24"></div>
+                    >
+                    <div class="w-48 h-24 bg-surface-overlay rounded-full peer peer-checked:bg-primary transition" />
+                    <div class="absolute left-4 top-4 w-16 h-16 bg-white rounded-full transition peer-checked:translate-x-24" />
                   </label>
                 </div>
 
                 <BaseButton
-                  @click="handleSavePrivacy"
                   variant="primary"
                   :loading="savingPrivacy"
+                  @click="handleSavePrivacy"
                 >
                   Save Privacy Settings
                 </BaseButton>
@@ -305,22 +339,31 @@ const handleSignOut = async () => {
           </div>
 
           <!-- Notifications Tab -->
-          <div v-else-if="activeTab === 'notifications'" class="space-y-24">
+          <div
+            v-else-if="activeTab === 'notifications'"
+            class="space-y-24"
+          >
             <section class="bg-surface-elevated p-24 rounded-lg">
-              <h2 class="text-xl font-bold text-text mb-16">Notifications</h2>
+              <h2 class="text-xl font-bold text-text mb-16">
+                Notifications
+              </h2>
               <div class="space-y-16">
                 <!-- Email -->
                 <div class="flex items-center justify-between">
                   <div>
-                    <p class="font-medium text-text">Email notifications</p>
-                    <p class="text-sm text-text-muted">Receive activity updates via email</p>
+                    <p class="font-medium text-text">
+                      Email notifications
+                    </p>
+                    <p class="text-sm text-text-muted">
+                      Receive activity updates via email
+                    </p>
                   </div>
                   <button
                     role="switch"
                     :aria-checked="emailNotifications"
-                    @click="emailNotifications = !emailNotifications"
                     class="relative w-44 h-24 rounded-full transition-colors"
                     :class="emailNotifications ? 'bg-primary' : 'bg-border'"
+                    @click="emailNotifications = !emailNotifications"
                   >
                     <span
                       class="absolute top-2 left-2 w-20 h-20 bg-white rounded-full shadow transition-transform"
@@ -331,7 +374,9 @@ const handleSignOut = async () => {
                 <!-- Push -->
                 <div class="flex items-center justify-between">
                   <div>
-                    <p class="font-medium text-text">Push notifications</p>
+                    <p class="font-medium text-text">
+                      Push notifications
+                    </p>
                     <p class="text-sm text-text-muted">
                       {{ pushSupported ? 'Get notified about likes, comments, and friends' : 'Not supported in this browser' }}
                     </p>
@@ -340,9 +385,9 @@ const handleSignOut = async () => {
                     role="switch"
                     :aria-checked="pushNotifications"
                     :disabled="!pushSupported || pushLoading"
-                    @click="handlePushToggle(!pushNotifications)"
                     class="relative w-44 h-24 rounded-full transition-colors disabled:opacity-40"
                     :class="pushNotifications ? 'bg-primary' : 'bg-border'"
+                    @click="handlePushToggle(!pushNotifications)"
                   >
                     <span
                       class="absolute top-2 left-2 w-20 h-20 bg-white rounded-full shadow transition-transform"
@@ -355,42 +400,59 @@ const handleSignOut = async () => {
           </div>
 
           <!-- Appearance Tab -->
-          <div v-else-if="activeTab === 'appearance'" class="space-y-24">
+          <div
+            v-else-if="activeTab === 'appearance'"
+            class="space-y-24"
+          >
             <section class="bg-surface-elevated p-24 rounded-lg">
-              <h2 class="text-xl font-bold text-text mb-16">Theme</h2>
+              <h2 class="text-xl font-bold text-text mb-16">
+                Theme
+              </h2>
 
               <div class="grid grid-cols-1 sm:grid-cols-3 gap-12">
                 <button
-                  @click="handleThemeChange('light')"
                   class="p-16 rounded-lg border-2 transition text-center"
                   :class="theme === 'light'
                     ? 'border-primary bg-primary/5'
                     : 'border-border hover:border-primary/50'"
+                  @click="handleThemeChange('light')"
                 >
-                  <div class="text-3xl mb-8">☀️</div>
-                  <p class="font-medium text-text">Light</p>
+                  <div class="text-3xl mb-8">
+                    ☀️
+                  </div>
+                  <p class="font-medium text-text">
+                    Light
+                  </p>
                 </button>
 
                 <button
-                  @click="handleThemeChange('dark')"
                   class="p-16 rounded-lg border-2 transition text-center"
                   :class="theme === 'dark'
                     ? 'border-primary bg-primary/5'
                     : 'border-border hover:border-primary/50'"
+                  @click="handleThemeChange('dark')"
                 >
-                  <div class="text-3xl mb-8">🌙</div>
-                  <p class="font-medium text-text">Dark</p>
+                  <div class="text-3xl mb-8">
+                    🌙
+                  </div>
+                  <p class="font-medium text-text">
+                    Dark
+                  </p>
                 </button>
 
                 <button
-                  @click="handleThemeChange('system')"
                   class="p-16 rounded-lg border-2 transition text-center"
                   :class="theme === 'system'
                     ? 'border-primary bg-primary/5'
                     : 'border-border hover:border-primary/50'"
+                  @click="handleThemeChange('system')"
                 >
-                  <div class="text-3xl mb-8">💻</div>
-                  <p class="font-medium text-text">System</p>
+                  <div class="text-3xl mb-8">
+                    💻
+                  </div>
+                  <p class="font-medium text-text">
+                    System
+                  </p>
                 </button>
               </div>
             </section>
@@ -409,7 +471,9 @@ const handleSignOut = async () => {
         class="bg-surface rounded-lg p-24 max-w-md w-full"
         @click.stop
       >
-        <h3 class="text-xl font-bold text-text mb-12">Delete Account?</h3>
+        <h3 class="text-xl font-bold text-text mb-12">
+          Delete Account?
+        </h3>
         <p class="text-text-muted mb-16">
           This action cannot be undone. All your posts, collections, and data will be permanently deleted.
         </p>
@@ -429,7 +493,7 @@ const handleSignOut = async () => {
             type="text"
             class="w-full px-12 py-8 bg-surface-elevated border-2 border-border rounded-lg text-text focus:outline-none focus:border-error transition"
             placeholder="delete my account"
-          />
+          >
         </div>
 
         <div class="flex gap-12">
@@ -445,8 +509,8 @@ const handleSignOut = async () => {
             variant="danger"
             size="md"
             full-width
-            @click="handleDeleteAccount"
             :disabled="deleteConfirmText !== 'delete my account'"
+            @click="handleDeleteAccount"
           >
             Delete Account
           </BaseButton>

@@ -24,7 +24,9 @@ onMounted(() => {
     <header class="bg-surface-elevated border-b border-border">
       <div class="max-w-content mx-auto px-16 py-16">
         <div class="flex items-center justify-between">
-          <h1 class="text-2xl font-bold text-primary">MuralMap</h1>
+          <h1 class="text-2xl font-bold text-primary">
+            MuralMap
+          </h1>
 
           <nav class="flex items-center gap-16">
             <router-link
@@ -44,9 +46,9 @@ onMounted(() => {
             </router-link>
 
             <button
-              @click="appStore.toggleTheme"
               class="p-8 rounded-lg hover:bg-surface-overlay transition"
               aria-label="Toggle theme"
+              @click="appStore.toggleTheme"
             >
               {{ appStore.theme === 'light' ? '🌙' : '☀️' }}
             </button>
@@ -86,24 +88,36 @@ onMounted(() => {
       <!-- Features Grid -->
       <div class="mt-64 grid grid-cols-1 md:grid-cols-3 gap-24">
         <div class="bg-surface-elevated p-24 rounded-lg">
-          <div class="text-3xl mb-12">📸</div>
-          <h3 class="text-xl font-bold mb-8">Document Art</h3>
+          <div class="text-3xl mb-12">
+            📸
+          </div>
+          <h3 class="text-xl font-bold mb-8">
+            Document Art
+          </h3>
           <p class="text-text-muted">
             Log murals with GPS data, artist credits, and detailed descriptions. Preserve street art history.
           </p>
         </div>
 
         <div class="bg-surface-elevated p-24 rounded-lg">
-          <div class="text-3xl mb-12">🗺️</div>
-          <h3 class="text-xl font-bold mb-8">Explore Maps</h3>
+          <div class="text-3xl mb-12">
+            🗺️
+          </div>
+          <h3 class="text-xl font-bold mb-8">
+            Explore Maps
+          </h3>
           <p class="text-text-muted">
             Discover murals near you with our interactive map. Filter by style, artist, or location.
           </p>
         </div>
 
         <div class="bg-surface-elevated p-24 rounded-lg">
-          <div class="text-3xl mb-12">👥</div>
-          <h3 class="text-xl font-bold mb-8">Connect</h3>
+          <div class="text-3xl mb-12">
+            👥
+          </div>
+          <h3 class="text-xl font-bold mb-8">
+            Connect
+          </h3>
           <p class="text-text-muted">
             Follow friends, share collections, and join a community of street art enthusiasts.
           </p>
@@ -126,9 +140,9 @@ onMounted(() => {
       >
         <span>{{ toast.message }}</span>
         <button
-          @click="appStore.dismissToast(toast.id)"
           class="ml-16 text-white font-bold"
           aria-label="Dismiss"
+          @click="appStore.dismissToast(toast.id)"
         >
           ×
         </button>

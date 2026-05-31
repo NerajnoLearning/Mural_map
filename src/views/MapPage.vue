@@ -55,7 +55,9 @@ const closeSelectedPost = () => {
       <div class="max-w-content mx-auto px-16 py-16">
         <div class="flex items-center justify-between">
           <div>
-            <h1 class="text-2xl font-bold text-text">Mural Map</h1>
+            <h1 class="text-2xl font-bold text-text">
+              Mural Map
+            </h1>
             <p class="text-sm text-text-muted mt-4">
               Explore street art around the world
             </p>
@@ -64,10 +66,10 @@ const closeSelectedPost = () => {
           <div class="flex items-center gap-12">
             <label class="flex items-center gap-8 cursor-pointer">
               <input
-                type="checkbox"
                 v-model="showClustering"
+                type="checkbox"
                 class="w-18 h-18 rounded border-2 border-border text-primary focus:ring-2 focus:ring-primary"
-              />
+              >
               <span class="text-sm font-medium text-text">Clustering</span>
             </label>
 
@@ -83,14 +85,38 @@ const closeSelectedPost = () => {
     </header>
 
     <!-- Map -->
-    <main class="p-16" style="height: calc(100vh - 140px);">
-      <div v-if="postsStore.loading && postsStore.posts.length === 0" class="flex items-center justify-center h-full">
+    <main
+      class="p-16"
+      style="height: calc(100vh - 140px);"
+    >
+      <div
+        v-if="postsStore.loading && postsStore.posts.length === 0"
+        class="flex items-center justify-center h-full"
+      >
         <div class="text-center">
-          <svg class="animate-spin h-48 w-48 text-primary mx-auto mb-16" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+          <svg
+            class="animate-spin h-48 w-48 text-primary mx-auto mb-16"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
           </svg>
-          <p class="text-text-muted">Loading murals...</p>
+          <p class="text-text-muted">
+            Loading murals...
+          </p>
         </div>
       </div>
 
@@ -110,14 +136,26 @@ const closeSelectedPost = () => {
       style="max-height: 50vh; md:max-height: 100vh;"
     >
       <div class="flex items-start justify-between mb-16">
-        <h3 class="text-lg font-bold text-text">{{ selectedPost.title }}</h3>
+        <h3 class="text-lg font-bold text-text">
+          {{ selectedPost.title }}
+        </h3>
         <button
-          @click="closeSelectedPost"
           class="p-8 hover:bg-surface-overlay rounded-lg transition"
           aria-label="Close"
+          @click="closeSelectedPost"
         >
-          <svg class="w-20 h-20 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            class="w-20 h-20 text-text"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -126,26 +164,40 @@ const closeSelectedPost = () => {
         :src="selectedPost.image_url"
         :alt="selectedPost.title || 'Mural'"
         class="w-full h-48 object-cover rounded-lg mb-16"
-      />
+      >
 
       <div class="space-y-12">
         <div v-if="selectedPost.artist">
-          <p class="text-sm text-text-muted">Artist</p>
-          <p class="font-medium text-text">{{ selectedPost.artist }}</p>
+          <p class="text-sm text-text-muted">
+            Artist
+          </p>
+          <p class="font-medium text-text">
+            {{ selectedPost.artist }}
+          </p>
         </div>
 
         <div v-if="selectedPost.description">
-          <p class="text-sm text-text-muted">Description</p>
-          <p class="text-text">{{ selectedPost.description }}</p>
+          <p class="text-sm text-text-muted">
+            Description
+          </p>
+          <p class="text-text">
+            {{ selectedPost.description }}
+          </p>
         </div>
 
         <div v-if="selectedPost.city">
-          <p class="text-sm text-text-muted">Location</p>
-          <p class="text-text">{{ selectedPost.city }}</p>
+          <p class="text-sm text-text-muted">
+            Location
+          </p>
+          <p class="text-text">
+            {{ selectedPost.city }}
+          </p>
         </div>
 
         <div v-if="selectedPost.tags && selectedPost.tags.length > 0">
-          <p class="text-sm text-text-muted mb-8">Tags</p>
+          <p class="text-sm text-text-muted mb-8">
+            Tags
+          </p>
           <div class="flex flex-wrap gap-6">
             <span
               v-for="tag in selectedPost.tags"

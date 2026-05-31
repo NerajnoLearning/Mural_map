@@ -61,7 +61,9 @@ const handleLoadMore = async () => {
     <header class="bg-surface-elevated border-b border-border sticky top-0 z-10">
       <div class="max-w-content mx-auto px-16 py-16">
         <div class="flex items-center justify-between mb-16">
-          <h1 class="text-2xl font-bold text-text">Discover</h1>
+          <h1 class="text-2xl font-bold text-text">
+            Discover
+          </h1>
 
           <router-link
             to="/upload"
@@ -74,37 +76,37 @@ const handleLoadMore = async () => {
         <!-- Filter tabs -->
         <div class="flex gap-8">
           <button
-            @click="handleFilterChange('all')"
             :class="[
               'px-16 py-8 rounded-lg font-medium transition',
               filterTab === 'all'
                 ? 'bg-primary text-white'
                 : 'bg-surface text-text-muted hover:bg-surface-elevated'
             ]"
+            @click="handleFilterChange('all')"
           >
             All
           </button>
 
           <button
-            @click="handleFilterChange('public')"
             :class="[
               'px-16 py-8 rounded-lg font-medium transition',
               filterTab === 'public'
                 ? 'bg-primary text-white'
                 : 'bg-surface text-text-muted hover:bg-surface-elevated'
             ]"
+            @click="handleFilterChange('public')"
           >
             Public
           </button>
 
           <button
-            @click="handleFilterChange('friends')"
             :class="[
               'px-16 py-8 rounded-lg font-medium transition',
               filterTab === 'friends'
                 ? 'bg-primary text-white'
                 : 'bg-surface text-text-muted hover:bg-surface-elevated'
             ]"
+            @click="handleFilterChange('friends')"
           >
             Friends Only
           </button>
@@ -113,13 +115,19 @@ const handleLoadMore = async () => {
     </header>
 
     <!-- Trending This Week -->
-    <section v-if="trendingPosts.length > 0" class="max-w-content mx-auto px-16 pt-24">
+    <section
+      v-if="trendingPosts.length > 0"
+      class="max-w-content mx-auto px-16 pt-24"
+    >
       <div class="flex items-center justify-between mb-12">
         <h2 class="text-lg font-bold text-text flex items-center gap-8">
           <span>🔥</span>
           <span>Trending This Week</span>
         </h2>
-        <router-link to="/trending" class="text-sm text-primary hover:text-primary-dark transition font-medium">
+        <router-link
+          to="/trending"
+          class="text-sm text-primary hover:text-primary-dark transition font-medium"
+        >
           See all
         </router-link>
       </div>
@@ -140,13 +148,25 @@ const handleLoadMore = async () => {
               :alt="post.title"
               class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
               loading="lazy"
-            />
-            <div v-else class="w-full h-full flex items-center justify-center text-4xl">🎨</div>
+            >
+            <div
+              v-else
+              class="w-full h-full flex items-center justify-center text-4xl"
+            >
+              🎨
+            </div>
           </div>
           <!-- Info -->
           <div class="p-8">
-            <p class="text-sm font-semibold text-text truncate">{{ post.title || 'Untitled' }}</p>
-            <p v-if="post.city" class="text-xs text-text-muted truncate mt-2">{{ post.city }}</p>
+            <p class="text-sm font-semibold text-text truncate">
+              {{ post.title || 'Untitled' }}
+            </p>
+            <p
+              v-if="post.city"
+              class="text-xs text-text-muted truncate mt-2"
+            >
+              {{ post.city }}
+            </p>
             <p class="text-xs text-primary mt-4 font-medium">
               {{ post.favorites_count }} favorites this week
             </p>

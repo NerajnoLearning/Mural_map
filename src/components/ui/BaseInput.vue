@@ -45,9 +45,15 @@ const handleInput = (event: Event) => {
 
 <template>
   <div class="w-full">
-    <label v-if="label" class="block mb-8 font-medium text-text">
+    <label
+      v-if="label"
+      class="block mb-8 font-medium text-text"
+    >
       {{ label }}
-      <span v-if="required" class="text-error ml-4">*</span>
+      <span
+        v-if="required"
+        class="text-error ml-4"
+      >*</span>
     </label>
 
     <input
@@ -66,13 +72,20 @@ const handleInput = (event: Event) => {
       @input="handleInput"
       @blur="emit('blur')"
       @focus="emit('focus')"
-    />
+    >
 
-    <p v-if="error" id="error-message" class="mt-8 text-sm text-error">
+    <p
+      v-if="error"
+      id="error-message"
+      class="mt-8 text-sm text-error"
+    >
       {{ error }}
     </p>
 
-    <p v-if="maxlength && !error" class="mt-8 text-sm text-text-muted text-right">
+    <p
+      v-if="maxlength && !error"
+      class="mt-8 text-sm text-text-muted text-right"
+    >
       {{ String(modelValue).length }} / {{ maxlength }}
     </p>
   </div>

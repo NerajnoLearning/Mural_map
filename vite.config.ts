@@ -14,7 +14,8 @@ export default defineConfig({
     strictPort: false,
     host: '127.0.0.1',
     hmr: {
-      host: '127.0.0.1',
+      protocol: 'ws',
+      host: 'localhost',
       port: 5173,
       overlay: false,
     },

@@ -68,7 +68,10 @@ const focusInput = () => {
 
 <template>
   <div class="w-full">
-    <label v-if="label" class="block mb-8 font-medium text-text">
+    <label
+      v-if="label"
+      class="block mb-8 font-medium text-text"
+    >
       {{ label }}
     </label>
 
@@ -91,12 +94,22 @@ const focusInput = () => {
         <button
           v-if="!disabled"
           type="button"
-          @click.stop="removeTag(index)"
           class="hover:text-primary-dark transition-colors"
           aria-label="Remove tag"
+          @click.stop="removeTag(index)"
         >
-          <svg class="w-14 h-14" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            class="w-14 h-14"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -111,12 +124,15 @@ const focusInput = () => {
         class="flex-1 min-w-[120px] bg-transparent border-none outline-none text-text placeholder:text-text-muted"
         @keydown="handleKeydown"
         @blur="addTag"
-      />
+      >
     </div>
 
     <p class="mt-8 text-sm text-text-muted">
       {{ modelValue.length }} / {{ maxTags }} tags
-      <span v-if="canAddMore" class="ml-8">• Press Enter to add</span>
+      <span
+        v-if="canAddMore"
+        class="ml-8"
+      >• Press Enter to add</span>
     </p>
   </div>
 </template>

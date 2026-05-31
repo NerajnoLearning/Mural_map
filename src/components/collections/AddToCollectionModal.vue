@@ -122,14 +122,26 @@ const handleCreateAndAdd = async () => {
     >
       <!-- Header -->
       <div class="p-24 border-b border-border flex items-center justify-between">
-        <h2 class="text-2xl font-bold text-text">Add to Collection</h2>
+        <h2 class="text-2xl font-bold text-text">
+          Add to Collection
+        </h2>
         <button
-          @click="$emit('close')"
           class="p-8 hover:bg-surface-overlay rounded-lg transition"
           aria-label="Close"
+          @click="$emit('close')"
         >
-          <svg class="w-20 h-20 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+          <svg
+            class="w-20 h-20 text-text"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M6 18L18 6M6 6l12 12"
+            />
           </svg>
         </button>
       </div>
@@ -137,24 +149,46 @@ const handleCreateAndAdd = async () => {
       <!-- Content -->
       <div class="flex-1 overflow-y-auto p-24">
         <!-- Loading -->
-        <div v-if="loading" class="flex items-center justify-center py-32">
-          <svg class="animate-spin h-32 w-32 text-primary" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-            <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-            <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        <div
+          v-if="loading"
+          class="flex items-center justify-center py-32"
+        >
+          <svg
+            class="animate-spin h-32 w-32 text-primary"
+            xmlns="http://www.w3.org/2000/svg"
+            fill="none"
+            viewBox="0 0 24 24"
+          >
+            <circle
+              class="opacity-25"
+              cx="12"
+              cy="12"
+              r="10"
+              stroke="currentColor"
+              stroke-width="4"
+            />
+            <path
+              class="opacity-75"
+              fill="currentColor"
+              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+            />
           </svg>
         </div>
 
         <!-- Collections list -->
-        <div v-else-if="collections.length > 0 && !showCreateNew" class="space-y-8">
+        <div
+          v-else-if="collections.length > 0 && !showCreateNew"
+          class="space-y-8"
+        >
           <button
             v-for="collection in collections"
             :key="collection.id"
-            @click="handleSelectCollection(collection.id)"
             class="w-full p-16 rounded-lg border-2 transition text-left flex items-center gap-12"
             :class="selectedCollectionId === collection.id
               ? 'border-primary bg-primary/5'
               : 'border-border hover:border-primary/50'"
             :disabled="collection.contains_post"
+            @click="handleSelectCollection(collection.id)"
           >
             <!-- Thumbnail -->
             <div class="w-48 h-48 rounded bg-primary/10 flex items-center justify-center flex-shrink-0 overflow-hidden">
@@ -163,27 +197,56 @@ const handleCreateAndAdd = async () => {
                 :src="collection.cover_image_url"
                 :alt="collection.name"
                 class="w-full h-full object-cover"
-              />
-              <svg v-else class="w-24 h-24 text-primary/30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+              >
+              <svg
+                v-else
+                class="w-24 h-24 text-primary/30"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+                />
               </svg>
             </div>
 
             <!-- Info -->
             <div class="flex-1 min-w-0">
-              <h3 class="font-bold text-text truncate">{{ collection.name }}</h3>
-              <p class="text-sm text-text-muted">{{ collection.posts_count || 0 }} {{ collection.posts_count === 1 ? 'mural' : 'murals' }}</p>
+              <h3 class="font-bold text-text truncate">
+                {{ collection.name }}
+              </h3>
+              <p class="text-sm text-text-muted">
+                {{ collection.posts_count || 0 }} {{ collection.posts_count === 1 ? 'mural' : 'murals' }}
+              </p>
             </div>
 
             <!-- Checkmark if already in collection -->
-            <div v-if="collection.contains_post" class="flex-shrink-0">
-              <svg class="w-24 h-24 text-success" fill="currentColor" viewBox="0 0 20 20">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+            <div
+              v-if="collection.contains_post"
+              class="flex-shrink-0"
+            >
+              <svg
+                class="w-24 h-24 text-success"
+                fill="currentColor"
+                viewBox="0 0 20 20"
+              >
+                <path
+                  fill-rule="evenodd"
+                  d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z"
+                  clip-rule="evenodd"
+                />
               </svg>
             </div>
 
             <!-- Radio indicator -->
-            <div v-else class="flex-shrink-0">
+            <div
+              v-else
+              class="flex-shrink-0"
+            >
               <div
                 class="w-20 h-20 rounded-full border-2 transition"
                 :class="selectedCollectionId === collection.id
@@ -193,25 +256,43 @@ const handleCreateAndAdd = async () => {
                 <div
                   v-if="selectedCollectionId === collection.id"
                   class="w-full h-full rounded-full bg-white scale-50"
-                ></div>
+                />
               </div>
             </div>
           </button>
         </div>
 
         <!-- Empty state -->
-        <div v-else-if="collections.length === 0 && !showCreateNew" class="text-center py-32">
-          <svg class="w-64 h-64 text-text-muted mx-auto mb-16" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10" />
+        <div
+          v-else-if="collections.length === 0 && !showCreateNew"
+          class="text-center py-32"
+        >
+          <svg
+            class="w-64 h-64 text-text-muted mx-auto mb-16"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"
+            />
           </svg>
-          <h3 class="text-lg font-bold text-text mb-8">No collections yet</h3>
+          <h3 class="text-lg font-bold text-text mb-8">
+            No collections yet
+          </h3>
           <p class="text-text-muted mb-16">
             Create your first collection to organize murals
           </p>
         </div>
 
         <!-- Create new form -->
-        <div v-if="showCreateNew" class="space-y-16">
+        <div
+          v-if="showCreateNew"
+          class="space-y-16"
+        >
           <BaseInput
             v-model="newCollectionName"
             label="Collection Name"
@@ -245,8 +326,18 @@ const handleCreateAndAdd = async () => {
           full-width
           @click="toggleCreateNew"
         >
-          <svg class="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4" />
+          <svg
+            class="w-20 h-20"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M12 4v16m8-8H4"
+            />
           </svg>
           Create New Collection
         </BaseButton>
@@ -258,8 +349,8 @@ const handleCreateAndAdd = async () => {
             variant="outline"
             size="md"
             full-width
-            @click="toggleCreateNew"
             :disabled="isCreating"
+            @click="toggleCreateNew"
           >
             Back
           </BaseButton>
@@ -269,9 +360,9 @@ const handleCreateAndAdd = async () => {
             variant="primary"
             size="md"
             full-width
-            @click="handleCreateAndAdd"
             :loading="isCreating"
             :disabled="!newCollectionName.trim()"
+            @click="handleCreateAndAdd"
           >
             Create & Add
           </BaseButton>
@@ -281,9 +372,9 @@ const handleCreateAndAdd = async () => {
             variant="primary"
             size="md"
             full-width
-            @click="handleAddToCollection"
             :loading="isAdding"
             :disabled="!selectedCollectionId"
+            @click="handleAddToCollection"
           >
             Add to Collection
           </BaseButton>

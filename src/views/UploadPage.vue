@@ -153,15 +153,27 @@ const cancel = () => {
         <div class="flex items-center justify-between">
           <div class="flex items-center gap-16">
             <button
-              @click="cancel"
               class="p-8 hover:bg-surface-overlay rounded-lg transition"
               aria-label="Cancel"
+              @click="cancel"
             >
-              <svg class="w-20 h-20 text-text" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
+              <svg
+                class="w-20 h-20 text-text"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M6 18L18 6M6 6l12 12"
+                />
               </svg>
             </button>
-            <h1 class="text-xl font-bold text-text">Upload Mural</h1>
+            <h1 class="text-xl font-bold text-text">
+              Upload Mural
+            </h1>
           </div>
 
           <div class="flex items-center gap-12">
@@ -227,7 +239,7 @@ const cancel = () => {
             <span class="text-sm font-medium">Upload Photo</span>
           </div>
 
-          <div class="w-32 h-1 bg-border"></div>
+          <div class="w-32 h-1 bg-border" />
 
           <div :class="['flex items-center gap-8', currentStep === 'details' ? 'text-primary' : currentStep === 'preview' ? 'text-success' : 'text-text-muted']">
             <div :class="['w-24 h-24 rounded-full flex items-center justify-center font-bold text-sm', currentStep === 'details' ? 'bg-primary text-white' : currentStep === 'preview' ? 'bg-success text-white' : 'bg-border text-text-muted']">
@@ -236,7 +248,7 @@ const cancel = () => {
             <span class="text-sm font-medium">Add Details</span>
           </div>
 
-          <div class="w-32 h-1 bg-border"></div>
+          <div class="w-32 h-1 bg-border" />
 
           <div :class="['flex items-center gap-8', currentStep === 'preview' ? 'text-primary' : 'text-text-muted']">
             <div :class="['w-24 h-24 rounded-full flex items-center justify-center font-bold text-sm', currentStep === 'preview' ? 'bg-primary text-white' : 'bg-border text-text-muted']">
@@ -267,10 +279,17 @@ const cancel = () => {
       </div>
 
       <!-- Step 3: Preview -->
-      <div v-if="currentStep === 'preview'" class="space-y-24">
+      <div
+        v-if="currentStep === 'preview'"
+        class="space-y-24"
+      >
         <div>
-          <h3 class="text-xl font-bold text-text mb-8">Preview Your Post</h3>
-          <p class="text-text-muted">Review before posting</p>
+          <h3 class="text-xl font-bold text-text mb-8">
+            Preview Your Post
+          </h3>
+          <p class="text-text-muted">
+            Review before posting
+          </p>
         </div>
 
         <!-- Image Preview -->
@@ -279,23 +298,34 @@ const cancel = () => {
             :src="uploadedImage!.dataUrl"
             :alt="muralDetails?.title"
             class="w-full h-auto"
-          />
+          >
         </div>
 
         <!-- Details -->
         <div class="space-y-16">
           <div>
-            <h4 class="text-2xl font-bold text-text">{{ muralDetails?.title }}</h4>
-            <p v-if="muralDetails?.artist" class="text-text-muted mt-4">
+            <h4 class="text-2xl font-bold text-text">
+              {{ muralDetails?.title }}
+            </h4>
+            <p
+              v-if="muralDetails?.artist"
+              class="text-text-muted mt-4"
+            >
               by {{ muralDetails.artist }}
             </p>
           </div>
 
-          <p v-if="muralDetails?.description" class="text-text">
+          <p
+            v-if="muralDetails?.description"
+            class="text-text"
+          >
             {{ muralDetails.description }}
           </p>
 
-          <div v-if="muralDetails?.tags?.length" class="flex flex-wrap gap-8">
+          <div
+            v-if="muralDetails?.tags?.length"
+            class="flex flex-wrap gap-8"
+          >
             <span
               v-for="tag in muralDetails.tags"
               :key="tag"
@@ -305,17 +335,36 @@ const cancel = () => {
             </span>
           </div>
 
-          <div v-if="muralDetails?.location?.city" class="flex items-center gap-8 text-text-muted">
-            <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
-              <path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+          <div
+            v-if="muralDetails?.location?.city"
+            class="flex items-center gap-8 text-text-muted"
+          >
+            <svg
+              class="w-16 h-16"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
+              <path
+                fill-rule="evenodd"
+                d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z"
+                clip-rule="evenodd"
+              />
             </svg>
             <span>{{ muralDetails.location.city }}</span>
           </div>
 
           <div class="flex items-center gap-8 text-text-muted">
-            <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 20 20">
+            <svg
+              class="w-16 h-16"
+              fill="currentColor"
+              viewBox="0 0 20 20"
+            >
               <path d="M10 12a2 2 0 100-4 2 2 0 000 4z" />
-              <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd" />
+              <path
+                fill-rule="evenodd"
+                d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z"
+                clip-rule="evenodd"
+              />
             </svg>
             <span>{{ muralDetails?.visibility === 'public' ? 'Public' : 'Friends Only' }}</span>
           </div>

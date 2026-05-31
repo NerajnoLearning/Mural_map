@@ -19,15 +19,21 @@ const widthPercentage = computed(() => {
 </script>
 
 <template>
-  <div v-if="show && password" class="mt-8">
+  <div
+    v-if="show && password"
+    class="mt-8"
+  >
     <div class="flex items-center justify-between mb-4">
       <span class="text-sm text-text-muted">Password strength:</span>
-      <span class="text-sm font-medium" :class="{
-        'text-error': strength.label === 'Weak',
-        'text-warning': strength.label === 'Fair',
-        'text-info': strength.label === 'Good',
-        'text-success': strength.label === 'Strong'
-      }">
+      <span
+        class="text-sm font-medium"
+        :class="{
+          'text-error': strength.label === 'Weak',
+          'text-warning': strength.label === 'Fair',
+          'text-info': strength.label === 'Good',
+          'text-success': strength.label === 'Strong'
+        }"
+      >
         {{ strength.label }}
       </span>
     </div>
@@ -36,7 +42,7 @@ const widthPercentage = computed(() => {
         :class="strength.color"
         class="h-full transition-all duration-300 rounded-full"
         :style="{ width: `${widthPercentage}%` }"
-      ></div>
+      />
     </div>
   </div>
 </template>

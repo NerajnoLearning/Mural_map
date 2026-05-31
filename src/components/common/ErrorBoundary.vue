@@ -66,7 +66,10 @@ provide('reportError', (err: Error) => {
 </script>
 
 <template>
-  <div v-if="error" class="min-h-screen flex items-center justify-center p-24 bg-surface">
+  <div
+    v-if="error"
+    class="min-h-screen flex items-center justify-center p-24 bg-surface"
+  >
     <div class="max-w-md w-full">
       <!-- Error Icon -->
       <div class="flex justify-center mb-24">
@@ -108,7 +111,10 @@ provide('reportError', (err: Error) => {
             v-if="error.stack"
             class="text-xs font-mono text-text-muted overflow-x-auto whitespace-pre-wrap break-words"
           >{{ error.stack }}</pre>
-          <p v-if="errorInfo" class="text-xs font-mono text-text-muted mt-8">
+          <p
+            v-if="errorInfo"
+            class="text-xs font-mono text-text-muted mt-8"
+          >
             Context: {{ errorInfo }}
           </p>
         </div>
